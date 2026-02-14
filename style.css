@@ -578,12 +578,6 @@ h2 {
   font-family: "Poppins", system-ui, sans-serif;
 }
 
-.cart-total {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: var(--accent);
-}
-
 .cart-items {
   display: grid;
   gap: 12px;
