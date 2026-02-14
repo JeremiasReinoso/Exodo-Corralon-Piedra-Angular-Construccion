@@ -129,6 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
   ponerEstado("constructora", negocioAbierto(8, 30, 21, 0));
 
   const productList = document.querySelector("#product-list");
+  const productEmpty = document.querySelector("#product-empty");
   const cartItems = document.querySelector("#cart-items");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
 
@@ -256,7 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
     productList.innerHTML = productCategories
       .map(
         (category) => `
-        <section class="product-section" aria-labelledby="cat-${category.id}">
+        <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
           <div class="product-section-header">
             <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
             <span class="product-section-count">${category.items.length} productos</span>
@@ -380,5 +381,66 @@ document.addEventListener("DOMContentLoaded", function () {
 
   renderProducts();
   renderCart();
+
+  const categoryCards = document.querySelectorAll(".category-card");
+  if (!categoryCards.length) return;
+
+  const categoryMap = {
+    hierros: "hierros",
+    cementos: "mezclas",
+    chapas: "chapas",
+    electricidad: null,
+    sanitarios: null,
+    herramientas: null,
+  };
+
+  const productSections = Array.from(productList.querySelectorAll(".product-section"));
+
+  const resetFilter = () => {
+    productSections.forEach((section) => {
+      section.hidden = false;
+    });
+    categoryCards.forEach((card) => {
+      card.classList.remove("is-active");
+    });
+    if (productEmpty) productEmpty.hidden = true;
+  };
+
+  const applyFilter = (filterKey, clickedCard) => {
+    const mappedKey = categoryMap[filterKey];
+
+    categoryCards.forEach((card) => {
+      card.classList.toggle("is-active", card === clickedCard);
+    });
+
+    let visibleCount = 0;
+    productSections.forEach((section) => {
+      const matches = mappedKey && section.dataset.category === mappedKey;
+      section.hidden = !matches;
+      if (matches) visibleCount += 1;
+    });
+
+    if (productEmpty) productEmpty.hidden = visibleCount > 0;
+  };
+
+  categoryCards.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      const filterKey = card.dataset.filter;
+      if (!filterKey) return;
+
+      const isActive = card.classList.contains("is-active");
+      if (isActive) {
+        resetFilter();
+      } else {
+        applyFilter(filterKey, card);
+      }
+
+      const target = document.querySelector("#productos");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
 });
 
