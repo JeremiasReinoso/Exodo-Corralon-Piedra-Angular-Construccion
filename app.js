@@ -130,10 +130,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const productList = document.querySelector("#product-list");
   const cartItems = document.querySelector("#cart-items");
-  const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
 
-  if (!(productList && cartItems && cartTotal && cartWhatsapp)) return;
+  if (!(productList && cartItems && cartWhatsapp)) return;
 
   const products = [
     { id: "alambre", name: "Alambre", unit: "Kg" },
@@ -248,8 +247,6 @@ document.addEventListener("DOMContentLoaded", function () {
         )
         .join("");
     }
-
-    cartTotal.textContent = "Sin precios publicados";
 
     if (cart.size === 0) {
       cartWhatsapp.classList.add("is-disabled");
