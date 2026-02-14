@@ -134,55 +134,116 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (!(productList && cartItems && cartWhatsapp)) return;
 
-  const products = [
-    { id: "alambre", name: "Alambre", unit: "Kg" },
-    { id: "hierro-6", name: "Hierro del 6", unit: "Barra" },
-    { id: "hierro-8", name: "Hierro del 8", unit: "Barra" },
-    { id: "hierro-10", name: "Hierro del 10", unit: "Barra" },
-    { id: "hierro-12", name: "Hierro del 12", unit: "Barra" },
-    { id: "chapa-galv-c27", name: "Chapa galvanizada c27", unit: "Unidad" },
-    { id: "chapa-galv-c25", name: "Chapa galvanizada c25", unit: "Unidad" },
-    { id: "chapa-cinc-c27", name: "Chapa cincalum c27", unit: "Unidad" },
-    { id: "chapa-cinc-c25", name: "Chapa cincalum c25", unit: "Unidad" },
-    { id: "chapa-trap-c27", name: "Chapa trapezoidal c27", unit: "Unidad" },
-    { id: "chapa-trap-c25", name: "Chapa trapezoidal c25", unit: "Unidad" },
-    { id: "perfil-c80-16", name: "Perfil C 80 1.6", unit: "Unidad" },
-    { id: "perfil-c80-20", name: "Perfil C 80 2.0", unit: "Unidad" },
-    { id: "perfil-c100-16", name: "Perfil C 100 1.6", unit: "Unidad" },
-    { id: "perfil-c100-20", name: "Perfil C 100 2.0", unit: "Unidad" },
-    { id: "perfil-c120-20", name: "Perfil C 120 2.0", unit: "Unidad" },
-    { id: "malla-4-15x15", name: "Malla 4mm 15x15", unit: "Unidad" },
-    { id: "malla-5-15x15", name: "Malla 5mm 15x15", unit: "Unidad" },
-    { id: "malla-6-15x15", name: "Malla 6mm 15x15", unit: "Unidad" },
-    { id: "clavos-2", name: "Clavos 2", unit: "Kg" },
-    { id: "clavos-2-1-2", name: "Clavos 2 1/2", unit: "Kg" },
-    { id: "cemento-25", name: "Cemento x25kg", unit: "Bolsa" },
-    { id: "plasticor-25", name: "Plasticor x25kg", unit: "Bolsa" },
-    { id: "fino-weber-25", name: "Fino Weber x25kg", unit: "Bolsa" },
-    { id: "pegamento-ceramico-weber", name: "Pegamento p/ ceramico Weber", unit: "Bolsa" },
-    { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa" },
-    { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad" },
-    { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad" },
-    { id: "ladrillo-18x18x33", name: "Ladrillos 18x18x33", unit: "Unidad" },
-    { id: "ladrillo-comun", name: "Ladrillos comunes", unit: "Unidad" },
-    { id: "ladrillo-comun-sel", name: "Ladrillos comunes/seleccionados", unit: "Unidad" },
-    { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad" },
-    { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad" },
-    { id: "viguetas-tensolite", name: "Viguetas Tensolite (1.0 a 5.0 m, cada 20 cm)", unit: "m" },
-    { id: "ripio-4mt", name: "Ripio x4mt", unit: "m3" },
-    { id: "arena-4mt", name: "Arena x4mt", unit: "m3" },
-    { id: "arena-mt", name: "Arena x mt", unit: "m3" },
-    { id: "ripio-mt", name: "Ripio x mt", unit: "m3" },
-    { id: "tierra-4mt", name: "Tierra x4mt", unit: "m3" },
-    { id: "relleno-4mt", name: "Relleno x4mt", unit: "m3" },
-    { id: "granza-mt", name: "Granza x mt", unit: "m3" },
-    { id: "pvc-110", name: "Cano PVC 110", unit: "Unidad" },
-    { id: "codo-110", name: "Codo PVC 110", unit: "Unidad" },
-    { id: "curva-110", name: "Curva PVC 110", unit: "Unidad" },
-    { id: "pegamento-pvc", name: "Pegamento p/ PVC", unit: "Unidad" },
-    { id: "aislantes-5", name: "Aislantes 5mm", unit: "Unidad" },
-    { id: "aislantes-10", name: "Aislantes 10mm", unit: "Unidad" },
+  const productCategories = [
+    {
+      id: "hierros",
+      title: "Hierros y perfiles",
+      items: [
+        { id: "alambre", name: "Alambre", unit: "Kg" },
+        { id: "hierro-6", name: "Hierro del 6", unit: "Barra" },
+        { id: "hierro-8", name: "Hierro del 8", unit: "Barra" },
+        { id: "hierro-10", name: "Hierro del 10", unit: "Barra" },
+        { id: "hierro-12", name: "Hierro del 12", unit: "Barra" },
+        { id: "perfil-c80-16", name: "Perfil C 80 1.6", unit: "Unidad" },
+        { id: "perfil-c80-20", name: "Perfil C 80 2.0", unit: "Unidad" },
+        { id: "perfil-c100-16", name: "Perfil C 100 1.6", unit: "Unidad" },
+        { id: "perfil-c100-20", name: "Perfil C 100 2.0", unit: "Unidad" },
+        { id: "perfil-c120-20", name: "Perfil C 120 2.0", unit: "Unidad" },
+      ],
+    },
+    {
+      id: "chapas",
+      title: "Chapas",
+      items: [
+        { id: "chapa-galv-c27", name: "Chapa galvanizada c27", unit: "Unidad" },
+        { id: "chapa-galv-c25", name: "Chapa galvanizada c25", unit: "Unidad" },
+        { id: "chapa-cinc-c27", name: "Chapa cincalum c27", unit: "Unidad" },
+        { id: "chapa-cinc-c25", name: "Chapa cincalum c25", unit: "Unidad" },
+        { id: "chapa-trap-c27", name: "Chapa trapezoidal c27", unit: "Unidad" },
+        { id: "chapa-trap-c25", name: "Chapa trapezoidal c25", unit: "Unidad" },
+      ],
+    },
+    {
+      id: "mallas",
+      title: "Mallas",
+      items: [
+        { id: "malla-4-15x15", name: "Malla 4mm 15x15", unit: "Unidad" },
+        { id: "malla-5-15x15", name: "Malla 5mm 15x15", unit: "Unidad" },
+        { id: "malla-6-15x15", name: "Malla 6mm 15x15", unit: "Unidad" },
+      ],
+    },
+    {
+      id: "clavos",
+      title: "Clavos",
+      items: [
+        { id: "clavos-2", name: "Clavos 2", unit: "Kg" },
+        { id: "clavos-2-1-2", name: "Clavos 2 1/2", unit: "Kg" },
+      ],
+    },
+    {
+      id: "mezclas",
+      title: "Cementos y mezclas",
+      items: [
+        { id: "cemento-25", name: "Cemento x25kg", unit: "Bolsa" },
+        { id: "plasticor-25", name: "Plasticor x25kg", unit: "Bolsa" },
+        { id: "fino-weber-25", name: "Fino Weber x25kg", unit: "Bolsa" },
+        { id: "pegamento-ceramico-weber", name: "Pegamento p/ ceramico Weber", unit: "Bolsa" },
+        { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa" },
+      ],
+    },
+    {
+      id: "ladrillos",
+      title: "Ladrillos y bovedillas",
+      items: [
+        { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad" },
+        { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad" },
+        { id: "ladrillo-18x18x33", name: "Ladrillos 18x18x33", unit: "Unidad" },
+        { id: "ladrillo-comun", name: "Ladrillos comunes", unit: "Unidad" },
+        { id: "ladrillo-comun-sel", name: "Ladrillos comunes/seleccionados", unit: "Unidad" },
+        { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad" },
+        { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad" },
+        { id: "viguetas-tensolite", name: "Viguetas Tensolite (1.0 a 5.0 m, cada 20 cm)", unit: "m" },
+      ],
+    },
+    {
+      id: "aridos",
+      title: "Áridos y suelos",
+      items: [
+        { id: "ripio-4mt", name: "Ripio x4mt", unit: "m3" },
+        { id: "arena-4mt", name: "Arena x4mt", unit: "m3" },
+        { id: "arena-mt", name: "Arena x mt", unit: "m3" },
+        { id: "ripio-mt", name: "Ripio x mt", unit: "m3" },
+        { id: "tierra-4mt", name: "Tierra x4mt", unit: "m3" },
+        { id: "relleno-4mt", name: "Relleno x4mt", unit: "m3" },
+        { id: "granza-mt", name: "Granza x mt", unit: "m3" },
+      ],
+    },
+    {
+      id: "pvc",
+      title: "PVC y accesorios",
+      items: [
+        { id: "pvc-110", name: "Cano PVC 110", unit: "Unidad" },
+        { id: "codo-110", name: "Codo PVC 110", unit: "Unidad" },
+        { id: "curva-110", name: "Curva PVC 110", unit: "Unidad" },
+        { id: "pegamento-pvc", name: "Pegamento p/ PVC", unit: "Unidad" },
+      ],
+    },
+    {
+      id: "aislantes",
+      title: "Aislantes",
+      items: [
+        { id: "aislantes-5", name: "Aislantes 5mm", unit: "Unidad" },
+        { id: "aislantes-10", name: "Aislantes 10mm", unit: "Unidad" },
+      ],
+    },
   ];
+
+  const productIndex = new Map();
+  productCategories.forEach((category) => {
+    category.items.forEach((item) => {
+      productIndex.set(item.id, item);
+    });
+  });
 
   const cart = new Map();
 
@@ -192,26 +253,40 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   const renderProducts = () => {
-    productList.innerHTML = products
+    productList.innerHTML = productCategories
       .map(
-        (product) => `
-        <article class="product-card">
-          <div class="product-pick-label">Elegir producto</div>
-          <h4>${product.name}</h4>
-          <div class="product-meta">Unidad: ${product.unit}</div>
-          <div class="product-qty-field">
-            <label for="qty-${product.id}">Cantidad</label>
-            <input id="qty-${product.id}" type="number" min="1" step="1" value="1" data-qty-input />
+        (category) => `
+        <section class="product-section" aria-labelledby="cat-${category.id}">
+          <div class="product-section-header">
+            <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
+            <span class="product-section-count">${category.items.length} productos</span>
           </div>
-          <div class="product-actions">
-            <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">Agregar</button>
+          <div class="product-grid">
+            ${category.items
+              .map(
+                (product) => `
+              <article class="product-card">
+                <div class="product-pick-label">Elegir producto</div>
+                <h4>${product.name}</h4>
+                <div class="product-meta">Unidad: ${product.unit}</div>
+                <div class="product-qty-field">
+                  <label for="qty-${product.id}">Cantidad</label>
+                  <input id="qty-${product.id}" type="number" min="1" step="1" value="1" data-qty-input />
+                </div>
+                <div class="product-actions">
+                  <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">Agregar</button>
+                </div>
+              </article>
+            `
+              )
+              .join("")}
           </div>
-        </article>
+        </section>
       `
       )
       .join("");
 
-    registerReveal(productList.querySelectorAll(".product-card"));
+    registerReveal(productList.querySelectorAll(".product-card, .product-section-title"));
   };
 
   const buildWhatsappMessage = () => {
@@ -264,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (target.dataset.action !== "add") return;
 
     const id = target.dataset.id;
-    const product = products.find((item) => item.id === id);
+    const product = productIndex.get(id);
     if (!product) return;
 
     const card = target.closest(".product-card");
