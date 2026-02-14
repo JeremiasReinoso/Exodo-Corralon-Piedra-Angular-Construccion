@@ -66,25 +66,102 @@
 
       <section id="categorias" class="section">
         <div class="container">
-          <span class="tag">Stock estratégico</span>
-          <h2>Todo lo esencial para obra gruesa y terminaciones</h2>
-          <div class="services-grid">
-            <article class="service-card">
-              <h3>Estructura y mampostería</h3>         
-              <p class="muted">Cemento, ladrillos, hierro, cal, arena y piedra.</p>
-            </article>
-            <article class="service-card">
-              <h3>Instalaciones</h3>
-              <p class="muted">Sanitarios, cañerías, accesorios y grifería.</p>
-            </article>
-            <article class="service-card">
-              <h3>Terminaciones</h3>
-              <p class="muted">Cerámicos, revestimientos, pinturas y adhesivos.</p>
-            </article>
-            <article class="service-card">
-              <h3>Herramientas y seguridad</h3>
-              <p class="muted">Equipos, herramientas y elementos de protección.</p>
-            </article>
+          <span class="tag">Categorías</span>
+          <h2>Explorá por tipo de producto</h2>
+          <p class="lead">
+            Elegí una categoría para ir directo a lo que necesitás.
+          </p>
+          <div class="category-grid">
+            <a class="category-card" href="#productos" data-filter="hierros">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M4 7h16v10H4zM7 7V5h10v2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Hierros</span>
+            </a>
+            <a class="category-card" href="#productos" data-filter="cementos">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M7 3h10l2 6-7 12L5 9z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Cementos</span>
+            </a>
+            <a class="category-card" href="#productos" data-filter="electricidad">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M13 2 5 14h6l-1 8 8-12h-6z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Electricidad</span>
+            </a>
+            <a class="category-card" href="#productos" data-filter="sanitarios">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M7 4h10v4H7zM5 8h14l-2 6a5 5 0 0 1-10 0z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Sanitarios</span>
+            </a>
+            <a class="category-card" href="#productos" data-filter="chapas">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M4 6h16v12H4zM8 6V4m8 2V4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Chapas</span>
+            </a>
+            <a class="category-card" href="#productos" data-filter="herramientas">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M14.5 5.5a4 4 0 0 0 4.5 5.5l-8.5 8.5-3.5-3.5 8.5-8.5a4 4 0 0 0 0-2z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Herramientas</span>
+            </a>
           </div>
         </div>
       </section>
@@ -98,7 +175,10 @@
           </p>
 
           <div class="product-layout">
-            <div class="product-grid" id="product-list" aria-live="polite"></div>
+            <div class="product-list" id="product-list" aria-live="polite"></div>
+            <div class="product-empty" id="product-empty" hidden>
+              Todavía no hay productos cargados para esta categoría.
+            </div>
 
             <aside class="cart-panel" aria-labelledby="cart-title">
               <div class="cart-header">
@@ -215,7 +295,6 @@
     <script src="app.js"></script>
   </body>
 </html>
-
 
 
 
