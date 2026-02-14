@@ -469,6 +469,33 @@ h2 {
   margin-top: 26px;
 }
 
+.product-section {
+  display: grid;
+  gap: 14px;
+}
+
+.product-section + .product-section {
+  margin-top: 26px;
+}
+
+.product-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-section-title {
+  margin: 0;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+.product-section-count {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
