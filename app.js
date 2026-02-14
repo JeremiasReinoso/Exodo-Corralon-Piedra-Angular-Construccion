@@ -19,7 +19,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     if (!target) return;
     e.preventDefault();
     target.scrollIntoView({ behavior: "smooth", block: "start" });
-    navLinks?.classList.remove("open");
+    if (navLinks) navLinks.classList.remove("open");
   });
 });
 
@@ -31,7 +31,7 @@ if (yearEl) {
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 let revealObserver = null;
 
-if (!prefersReducedMotion) {
+if (!prefersReducedMotion && "IntersectionObserver" in window) {
   revealObserver = new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
@@ -59,7 +59,12 @@ const registerReveal = (elements) => {
       return;
     }
 
-    revealObserver?.observe(el);
+    if (revealObserver) {
+      revealObserver.observe(el);
+    } else {
+      // Fallback: if observer is not available, keep content visible.
+      el.classList.add("active");
+    }
   });
 };
 
@@ -304,3 +309,4 @@ document.addEventListener("DOMContentLoaded", function () {
   renderProducts();
   renderCart();
 });
+
