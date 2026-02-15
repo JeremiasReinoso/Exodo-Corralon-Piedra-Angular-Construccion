@@ -281,6 +281,12 @@ function initCatalogAndCart() {
       if (activeCatalog) activeCatalog.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+
+  refs.deliveryInputs.forEach((input) => {
+    input.addEventListener("change", () => {
+      renderCart(refs, state.cart);
+    });
+  });
 }
 
 function getCatalogRefs() {
@@ -289,9 +295,15 @@ function getCatalogRefs() {
   const cartItems = document.querySelector("#cart-items");
   const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
+  const deliveryInputs = Array.from(
+    document.querySelectorAll('input[name="delivery-mode"]')
+  );
   const categoryCards = Array.from(document.querySelectorAll(".category-card"));
 
-  if (!(productList && productEmpty && cartItems && cartTotal && cartWhatsapp)) {
+  if (
+    !(productList && productEmpty && cartItems && cartTotal && cartWhatsapp) ||
+    !deliveryInputs.length
+  ) {
     return null;
   }
 
@@ -301,6 +313,7 @@ function getCatalogRefs() {
     cartItems,
     cartTotal,
     cartWhatsapp,
+    deliveryInputs,
     categoryCards,
   };
 }
@@ -389,8 +402,11 @@ function renderCart(refs, cartMap) {
     refs.cartWhatsapp.classList.add("is-disabled");
     refs.cartWhatsapp.href = CART_WHATSAPP_BASE_URL;
   } else {
+    const deliveryMode = getSelectedDeliveryMode(refs.deliveryInputs);
     refs.cartWhatsapp.classList.remove("is-disabled");
-    refs.cartWhatsapp.href = `${CART_WHATSAPP_BASE_URL}?text=${encodeURIComponent(buildWhatsappMessage(items, totalItems))}`;
+    refs.cartWhatsapp.href = `${CART_WHATSAPP_BASE_URL}?text=${encodeURIComponent(
+      buildWhatsappMessage(items, totalItems, deliveryMode)
+    )}`;
   }
 }
 
@@ -429,11 +445,18 @@ function parsePositiveInteger(rawValue) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
 }
 
-function buildWhatsappMessage(items, totalItems) {
-  const lines = ["Hola, quiero consultar por estos materiales:"];
+function buildWhatsappMessage(items, totalItems, deliveryMode) {
+  const deliveryText =
+    deliveryMode === "envio" ? "con envio" : "con retiro en el local";
+  const lines = [`Hola quiero averiguar estos productos ${deliveryText}:`];
   items.forEach((item) => lines.push(`- ${item.name}: ${item.qty} ${item.unit}`));
   lines.push(`Total de items: ${totalItems}`);
   return lines.join("\n");
+}
+
+function getSelectedDeliveryMode(inputs) {
+  const selected = inputs.find((input) => input.checked);
+  return selected ? selected.value : "retiro";
 }
 
 function loadCartFromStorage() {
