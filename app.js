@@ -232,7 +232,7 @@ function initCatalogAndCart() {
     activeFilter: null,
   };
 
-  renderCatalog(refs.productList, productCategories);
+  renderCatalog(refs.productList, state.activeFilter);
   renderCart(refs, state.cart);
   applyCategoryFilter(refs, state, null);
 
@@ -275,11 +275,10 @@ function initCatalogAndCart() {
     card.addEventListener("click", (event) => {
       event.preventDefault();
       const filter = card.dataset.filter || null;
-      const nextFilter = state.activeFilter === filter ? null : filter;
-      applyCategoryFilter(refs, state, nextFilter);
+      applyCategoryFilter(refs, state, filter);
 
-      const productsSection = document.querySelector("#productos");
-      if (productsSection) productsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      const activeCatalog = document.querySelector("#catalogo-activo");
+      if (activeCatalog) activeCatalog.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
 }
@@ -306,12 +305,21 @@ function getCatalogRefs() {
   };
 }
 
-function renderCatalog(container, categories) {
-  container.innerHTML = categories
-    .map((category) => {
-      const cards = category.items
-        .map(
-          (product) => `
+function renderCatalog(container, categoryId) {
+  if (!categoryId) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const category = productCategories.find((item) => item.id === categoryId);
+  if (!category) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const cards = category.items
+    .map(
+      (product) => `
             <article class="product-card">
               <div class="product-pick-label">Elegir producto</div>
               <h4>${product.name}</h4>
@@ -325,22 +333,20 @@ function renderCatalog(container, categories) {
               </div>
             </article>
           `
-        )
-        .join("");
-
-      return `
-        <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
-          <div class="product-section-header">
-            <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
-            <span class="product-section-count">${category.items.length} productos</span>
-          </div>
-          <div class="product-grid">
-            ${cards}
-          </div>
-        </section>
-      `;
-    })
+    )
     .join("");
+
+  container.innerHTML = `
+    <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
+      <div class="product-section-header">
+        <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
+        <span class="product-section-count">${category.items.length} productos</span>
+      </div>
+      <div class="product-grid">
+        ${cards}
+      </div>
+    </section>
+  `;
 }
 
 function renderCart(refs, cartMap) {
@@ -390,17 +396,8 @@ function renderCart(refs, cartMap) {
 
 function applyCategoryFilter(refs, state, filter) {
   state.activeFilter = filter;
-
-  const sections = refs.productList.querySelectorAll(".product-section");
-  let visibleSections = 0;
-
-  sections.forEach((section) => {
-    const isVisible = !filter || section.dataset.category === filter;
-    section.hidden = !isVisible;
-    if (isVisible) visibleSections += 1;
-  });
-
-  refs.productEmpty.hidden = visibleSections > 0;
+  renderCatalog(refs.productList, filter);
+  refs.productEmpty.hidden = Boolean(filter);
   refs.categoryCards.forEach((card) => {
     card.classList.toggle("is-active", card.dataset.filter === filter);
   });
