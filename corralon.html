@@ -34,7 +34,7 @@
         <nav class="nav-links">
           <a href="index.html#servicios">Servicios</a>
           <a href="#categorias">Categorías</a>
-          <a href="#productos">Productos</a>
+          <a href="#categorias">Productos</a>
           <a href="#proceso">Proceso</a>
           <a href="#contacto">Contacto</a>
         </nav>
@@ -56,7 +56,7 @@
             por etapa para que avances sin interrupciones.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#productos">Cotizar materiales</a>
+            <a class="btn btn-primary" href="#catalogo-activo">Cotizar materiales</a>
             <a class="btn btn-outline" href="https://wa.me/5493815704653" target="_blank" rel="noopener"
               >WhatsApp directo</a
             >
@@ -72,7 +72,7 @@
             Elegí una categoría para ir directo a lo que necesitás.
           </p>
           <div class="category-grid">
-            <a class="category-card" href="#productos" data-filter="hierros">
+            <a class="category-card" href="#catalogo-activo" data-filter="hierros">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -87,7 +87,7 @@
               </span>
               <span class="category-name">Hierros</span>
             </a>
-            <a class="category-card" href="#productos" data-filter="cementos">
+            <a class="category-card" href="#catalogo-activo" data-filter="cementos">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -102,7 +102,7 @@
               </span>
               <span class="category-name">Cementos</span>
             </a>
-            <a class="category-card" href="#productos" data-filter="electricidad">
+            <a class="category-card" href="#catalogo-activo" data-filter="electricidad">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -117,7 +117,7 @@
               </span>
               <span class="category-name">Electricidad</span>
             </a>
-            <a class="category-card" href="#productos" data-filter="sanitarios">
+            <a class="category-card" href="#catalogo-activo" data-filter="sanitarios">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -132,7 +132,7 @@
               </span>
               <span class="category-name">Sanitarios</span>
             </a>
-            <a class="category-card" href="#productos" data-filter="chapas">
+            <a class="category-card" href="#catalogo-activo" data-filter="chapas">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -147,7 +147,7 @@
               </span>
               <span class="category-name">Chapas</span>
             </a>
-            <a class="category-card" href="#productos" data-filter="herramientas">
+            <a class="category-card" href="#catalogo-activo" data-filter="herramientas">
               <span class="category-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
                   <path
@@ -166,18 +166,12 @@
         </div>
       </section>
 
-      <section id="productos" class="section">
+      <section class="section-tight">
         <div class="container">
-          <span class="tag">Productos del corralon</span>
-          <h2>Materiales disponibles para cotizacion</h2>
-          <p class="lead">
-            Elegi el producto, selecciona la cantidad que necesitas y envia la lista por WhatsApp.
-          </p>
-
-          <div class="product-layout">
+          <div id="catalogo-activo" class="product-layout">
             <div class="product-list" id="product-list" aria-live="polite"></div>
-            <div class="product-empty" id="product-empty" hidden>
-              Todavía no hay productos cargados para esta categoría.
+            <div class="product-empty" id="product-empty">
+              Toca una categoria para abrir su catalogo.
             </div>
 
             <aside class="cart-panel" aria-labelledby="cart-title">
@@ -296,7 +290,6 @@
     <script src="app.js"></script>
   </body>
 </html>
-
 
 
 
