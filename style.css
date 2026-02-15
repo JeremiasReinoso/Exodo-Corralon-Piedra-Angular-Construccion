@@ -745,6 +745,34 @@ h2 {
   color: var(--ink-muted);
 }
 
+.delivery-mode {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  display: grid;
+  gap: 10px;
+}
+
+.delivery-mode-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--slate);
+}
+
+.delivery-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+.delivery-option input {
+  margin: 0;
+}
+
 .cart-whatsapp {
   width: 100%;
   justify-content: center;
