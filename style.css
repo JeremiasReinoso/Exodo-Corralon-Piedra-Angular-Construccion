@@ -745,32 +745,105 @@ h2 {
   color: var(--ink-muted);
 }
 
-.delivery-mode {
-  margin: 0;
+.delivery-switch-wrap {
+  display: grid;
+  gap: 10px;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--bg);
-  display: grid;
-  gap: 10px;
 }
 
-.delivery-mode-title {
+.delivery-switch-title {
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--slate);
 }
 
-.delivery-option {
-  display: flex;
+.delivery-switch-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 12px;
   align-items: center;
-  gap: 10px;
-  font-size: 0.95rem;
-  color: var(--ink-muted);
 }
 
-.delivery-option input {
-  margin: 0;
+.delivery-switch-label {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+  transition: color 0.25s ease;
+  line-height: 1.2;
+}
+
+.delivery-switch-label[data-role="retiro"] {
+  text-align: right;
+}
+
+.delivery-switch-label[data-role="envio"] {
+  text-align: left;
+}
+
+.delivery-switch-control[data-mode="retiro"] .delivery-switch-label[data-role="retiro"] {
+  color: var(--slate-2);
+}
+
+.delivery-switch-control[data-mode="envio"] .delivery-switch-label[data-role="envio"] {
+  color: var(--slate-2);
+}
+
+.delivery-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.delivery-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.delivery-switch-track {
+  width: 64px;
+  height: 34px;
+  border-radius: 999px;
+  background: #d7dce2;
+  border: 1px solid #c7ced6;
+  position: relative;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.delivery-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(15, 20, 25, 0.22);
+  transition: transform 0.25s ease;
+}
+
+.delivery-switch input:checked + .delivery-switch-track {
+  background: rgba(198, 91, 31, 0.34);
+  border-color: rgba(198, 91, 31, 0.5);
+}
+
+.delivery-switch input:checked + .delivery-switch-track .delivery-switch-thumb {
+  transform: translateX(30px);
+}
+
+.delivery-switch input:focus-visible + .delivery-switch-track {
+  outline: 2px solid rgba(198, 91, 31, 0.5);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .delivery-switch-control {
+    gap: 8px;
+  }
 }
 
 .cart-whatsapp {
