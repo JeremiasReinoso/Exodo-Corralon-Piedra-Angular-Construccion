@@ -187,17 +187,23 @@
                 <p class="cart-empty">Todavia no agregaste productos.</p>
               </div>
 
-              <fieldset class="delivery-mode" aria-label="Modalidad de entrega">
-                <legend class="delivery-mode-title">Modalidad</legend>
-                <label class="delivery-option">
-                  <input type="radio" name="delivery-mode" value="retiro" checked />
-                  <span>Retiro en el local</span>
-                </label>
-                <label class="delivery-option">
-                  <input type="radio" name="delivery-mode" value="envio" />
-                  <span>Con envio</span>
-                </label>
-              </fieldset>
+              <div class="delivery-switch-wrap">
+                <span class="delivery-switch-title">Modalidad</span>
+                <div class="delivery-switch-control" id="delivery-switch-control" data-mode="retiro">
+                <span class="delivery-switch-label" data-role="retiro">Retiro en el local</span>
+                  <label class="delivery-switch" for="delivery-mode-toggle">
+                    <input
+                      id="delivery-mode-toggle"
+                      type="checkbox"
+                      aria-label="Cambiar modalidad entre retiro en el local y con envio"
+                    />
+                    <span class="delivery-switch-track" aria-hidden="true">
+                      <span class="delivery-switch-thumb"></span>
+                    </span>
+                  </label>
+                  <span class="delivery-switch-label" data-role="envio">Con envio</span>
+                </div>
+              </div>
 
               <a
                 class="btn btn-primary cart-whatsapp"
