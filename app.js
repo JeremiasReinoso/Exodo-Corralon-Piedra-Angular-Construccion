@@ -3,6 +3,7 @@
 -------------------------------------------------- */
 
 const CART_STORAGE_KEY = "exodo_cart_v1";
+const DELIVERY_MODE_STORAGE_KEY = "exodo_delivery_mode_v1";
 const CART_WHATSAPP_BASE_URL = "https://wa.me/5493815704653";
 
 const productCategories = [
@@ -231,6 +232,8 @@ function initCatalogAndCart() {
     cart: loadCartFromStorage(),
     activeFilter: null,
   };
+  const savedDeliveryMode = loadDeliveryModeFromStorage();
+  setDeliveryModeUi(refs, savedDeliveryMode);
 
   renderCatalog(refs.productList, state.activeFilter);
   renderCart(refs, state.cart);
@@ -282,10 +285,11 @@ function initCatalogAndCart() {
     });
   });
 
-  refs.deliveryInputs.forEach((input) => {
-    input.addEventListener("change", () => {
-      renderCart(refs, state.cart);
-    });
+  refs.deliveryToggleInput.addEventListener("change", () => {
+    const deliveryMode = getSelectedDeliveryMode(refs.deliveryToggleInput);
+    setDeliveryModeUi(refs, deliveryMode);
+    saveDeliveryModeToStorage(deliveryMode);
+    renderCart(refs, state.cart);
   });
 }
 
@@ -295,14 +299,13 @@ function getCatalogRefs() {
   const cartItems = document.querySelector("#cart-items");
   const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
-  const deliveryInputs = Array.from(
-    document.querySelectorAll('input[name="delivery-mode"]')
-  );
+  const deliveryToggleInput = document.querySelector("#delivery-mode-toggle");
+  const deliverySwitchControl = document.querySelector("#delivery-switch-control");
   const categoryCards = Array.from(document.querySelectorAll(".category-card"));
 
   if (
     !(productList && productEmpty && cartItems && cartTotal && cartWhatsapp) ||
-    !deliveryInputs.length
+    !(deliveryToggleInput && deliverySwitchControl)
   ) {
     return null;
   }
@@ -313,7 +316,8 @@ function getCatalogRefs() {
     cartItems,
     cartTotal,
     cartWhatsapp,
-    deliveryInputs,
+    deliveryToggleInput,
+    deliverySwitchControl,
     categoryCards,
   };
 }
@@ -402,7 +406,7 @@ function renderCart(refs, cartMap) {
     refs.cartWhatsapp.classList.add("is-disabled");
     refs.cartWhatsapp.href = CART_WHATSAPP_BASE_URL;
   } else {
-    const deliveryMode = getSelectedDeliveryMode(refs.deliveryInputs);
+    const deliveryMode = getSelectedDeliveryMode(refs.deliveryToggleInput);
     refs.cartWhatsapp.classList.remove("is-disabled");
     refs.cartWhatsapp.href = `${CART_WHATSAPP_BASE_URL}?text=${encodeURIComponent(
       buildWhatsappMessage(items, totalItems, deliveryMode)
@@ -454,9 +458,32 @@ function buildWhatsappMessage(items, totalItems, deliveryMode) {
   return lines.join("\n");
 }
 
-function getSelectedDeliveryMode(inputs) {
-  const selected = inputs.find((input) => input.checked);
-  return selected ? selected.value : "retiro";
+function getSelectedDeliveryMode(toggleInput) {
+  return toggleInput && toggleInput.checked ? "envio" : "retiro";
+}
+
+function setDeliveryModeUi(refs, mode) {
+  const safeMode = mode === "envio" ? "envio" : "retiro";
+  refs.deliveryToggleInput.checked = safeMode === "envio";
+  refs.deliverySwitchControl.dataset.mode = safeMode;
+}
+
+function loadDeliveryModeFromStorage() {
+  try {
+    const raw = localStorage.getItem(DELIVERY_MODE_STORAGE_KEY);
+    return raw === "envio" ? "envio" : "retiro";
+  } catch (_error) {
+    return "retiro";
+  }
+}
+
+function saveDeliveryModeToStorage(mode) {
+  const safeMode = mode === "envio" ? "envio" : "retiro";
+  try {
+    localStorage.setItem(DELIVERY_MODE_STORAGE_KEY, safeMode);
+  } catch (_error) {
+    // localStorage can fail in private mode or blocked contexts.
+  }
 }
 
 function loadCartFromStorage() {
