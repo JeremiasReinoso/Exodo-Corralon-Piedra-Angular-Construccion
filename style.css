@@ -259,6 +259,43 @@ h2 {
   font-size: 1.5rem;
 }
 
+/* ANIMACION INICIO DE PAGINA */
+@media (prefers-reduced-motion: no-preference) {
+  .nav .logo {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: intro-fade-up 0.35s ease-out 0.05s forwards;
+    will-change: opacity, transform;
+  }
+
+  .hero h1,
+  .page-hero h1 {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: intro-fade-up 0.45s ease-out 0.3s forwards;
+    will-change: opacity, transform;
+  }
+
+  .hero .hero-actions,
+  .page-hero .hero-actions {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: intro-fade-up 0.4s ease-out 0.75s forwards;
+    will-change: opacity, transform;
+  }
+}
+
+@keyframes intro-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* HERO */
 .hero {
   position: relative;
