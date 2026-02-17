@@ -641,11 +641,6 @@ h2 {
   white-space: nowrap;
 }
 
-.search-item-price {
-  font-size: 0.88rem;
-  color: var(--ink-muted);
-}
-
 .search-add-btn {
   padding: 7px 12px;
   border-radius: 999px;
