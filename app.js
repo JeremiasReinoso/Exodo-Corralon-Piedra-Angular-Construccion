@@ -29,7 +29,7 @@ const productCategories = [
       { id: "cemento-25", name: "Cemento x25kg", unit: "Bolsa" },
       { id: "plasticor-25", name: "Plasticor x25kg", unit: "Bolsa" },
       { id: "fino-weber-25", name: "Fino Weber x25kg", unit: "Bolsa" },
-      { id: "pegamento-ceramico-weber", name: "Pegamento p/ ceramico Weber", unit: "Bolsa" },
+      { id: "pegamento-ceramico-weber", name: "Pegamento p/ cer\u00E1mico Weber", unit: "Bolsa" },
       { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa" },
       { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad" },
       { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad" },
@@ -41,7 +41,7 @@ const productCategories = [
     items: [
       { id: "cable-25", name: "Cable taller 2.5mm", unit: "Rollo" },
       { id: "caja-octogonal", name: "Caja octogonal", unit: "Unidad" },
-      { id: "llave-termica", name: "Llave termica 2x25A", unit: "Unidad" },
+      { id: "llave-termica", name: "Llave t\u00E9rmica 2x25A", unit: "Unidad" },
       { id: "toma-doble", name: "Tomacorriente doble", unit: "Unidad" },
     ],
   },
@@ -49,7 +49,7 @@ const productCategories = [
     id: "sanitarios",
     title: "Sanitarios",
     items: [
-      { id: "pvc-110", name: "Cano PVC 110", unit: "Unidad" },
+      { id: "pvc-110", name: "Ca\u00F1o PVC 110", unit: "Unidad" },
       { id: "codo-110", name: "Codo PVC 110", unit: "Unidad" },
       { id: "curva-110", name: "Curva PVC 110", unit: "Unidad" },
       { id: "pegamento-pvc", name: "Pegamento p/ PVC", unit: "Unidad" },
@@ -471,7 +471,7 @@ function renderCart(refs, cartMap) {
     .filter(Boolean);
 
   if (items.length === 0) {
-    refs.cartItems.innerHTML = '<p class="cart-empty">Todavia no agregaste productos.</p>';
+    refs.cartItems.innerHTML = '<p class="cart-empty">Todavía no agregaste productos.</p>';
   } else {
     refs.cartItems.innerHTML = items
       .map(
@@ -563,7 +563,7 @@ function renderSearchDropdown(refs, rawQuery) {
 
   const freeSlots = Math.max(0, MAX_SEARCH_RESULTS - Math.min(productMatches.length, MAX_SEARCH_RESULTS));
   if (freeSlots > 0 && categoryMatches.length) {
-    rows.push('<div class="search-group-label">Categorias</div>');
+    rows.push('<div class="search-group-label">Categorías</div>');
     categoryMatches.slice(0, freeSlots).forEach((category) => {
       rows.push(`
         <button class="search-category-item" type="button" data-search-category="${category.id}">
@@ -599,14 +599,14 @@ function showSearchFeedback(refs, message) {
 
 function updateProductEmptyState(refs, activeCategory, searchQuery) {
   if (!activeCategory) {
-    refs.productEmpty.textContent = "Toca una categoria para abrir su catalogo.";
+    refs.productEmpty.textContent = "Tocá una categoría para abrir su catálogo.";
     refs.productEmpty.hidden = false;
     return;
   }
 
   const category = productCategories.find((item) => item.id === activeCategory);
   if (!category) {
-    refs.productEmpty.textContent = "No se encontro la categoria seleccionada.";
+    refs.productEmpty.textContent = "No se encontró la categoría seleccionada.";
     refs.productEmpty.hidden = false;
     return;
   }
@@ -623,8 +623,8 @@ function updateProductEmptyState(refs, activeCategory, searchQuery) {
 
   refs.productEmpty.textContent =
     normalizedQuery.length > 0
-      ? "No encontramos productos para tu busqueda."
-      : "Esta categoria no tiene productos disponibles.";
+      ? "No encontramos productos para tu búsqueda."
+      : "Esta categoría no tiene productos disponibles.";
   refs.productEmpty.hidden = false;
 }
 
@@ -663,7 +663,7 @@ function parsePositiveInteger(rawValue) {
 
 function buildWhatsappMessage(items, totalItems, deliveryMode) {
   const deliveryText =
-    deliveryMode === "envio" ? "con envio" : "con retiro en el local";
+    deliveryMode === "envio" ? "con envío" : "con retiro en el local";
   const lines = [`Hola quiero averiguar estos productos ${deliveryText}:`];
   items.forEach((item) => lines.push(`- ${item.name}: ${item.qty} ${item.unit}`));
   lines.push(`Total de items: ${totalItems}`);
