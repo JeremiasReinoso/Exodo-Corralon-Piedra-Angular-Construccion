@@ -79,7 +79,6 @@ const productCategories = [
   },
 ];
 
-hydrateProducts(productCategories);
 const productIndex = buildProductIndex(productCategories);
 
 initBaseUi();
@@ -555,7 +554,6 @@ function renderSearchDropdown(refs, rawQuery) {
         <div class="search-item">
           <div class="search-item-main">
             <div class="search-item-name">${item.name}</div>
-            <div class="search-item-price">${formatCurrency(item.price)}</div>
           </div>
           <button class="search-add-btn" type="button" data-search-add="${item.id}">Agregar</button>
         </div>
@@ -628,15 +626,6 @@ function updateProductEmptyState(refs, activeCategory, searchQuery) {
       ? "No encontramos productos para tu busqueda."
       : "Esta categoria no tiene productos disponibles.";
   refs.productEmpty.hidden = false;
-}
-
-function formatCurrency(value) {
-  const amount = Number(value) || 0;
-  return new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-    maximumFractionDigits: 0,
-  }).format(amount);
 }
 
 function normalizeText(value) {
@@ -742,7 +731,6 @@ function saveCartToStorage(cartMap) {
         return {
           id,
           nombre: product.name,
-          precio: product.price,
           cantidad: qty,
         };
       })
@@ -751,28 +739,6 @@ function saveCartToStorage(cartMap) {
   } catch (_error) {
     // localStorage can fail in private mode or blocked contexts.
   }
-}
-
-function hydrateProducts(categories) {
-  const baseByCategory = {
-    hierros: 9800,
-    cementos: 7200,
-    electricidad: 5400,
-    sanitarios: 6200,
-    chapas: 13800,
-    herramientas: 8600,
-  };
-
-  categories.forEach((category) => {
-    category.items.forEach((item, index) => {
-      item.categoryId = category.id;
-      item.categoryTitle = category.title;
-      if (typeof item.price !== "number" || item.price <= 0) {
-        const base = baseByCategory[category.id] || 5000;
-        item.price = base + index * 950;
-      }
-    });
-  });
 }
 
 function buildProductIndex(categories) {
