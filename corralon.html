@@ -169,9 +169,23 @@
       <section class="section-tight">
         <div class="container">
           <div id="catalogo-activo" class="product-layout">
-            <div class="product-list" id="product-list" aria-live="polite"></div>
-            <div class="product-empty" id="product-empty">
-              Toca una categoria para abrir su catalogo.
+            <div class="product-catalog">
+              <div class="product-search">
+                <label class="product-search-label" for="product-search">
+                  Buscar producto
+                </label>
+                <input
+                  id="product-search"
+                  class="product-search-input"
+                  type="search"
+                  placeholder="Ej: hierro, cemento, chapa..."
+                  autocomplete="off"
+                />
+              </div>
+              <div class="product-list" id="product-list" aria-live="polite"></div>
+              <div class="product-empty" id="product-empty">
+                Toca una categoria para abrir su catalogo.
+              </div>
             </div>
 
             <aside class="cart-panel" aria-labelledby="cart-title">
