@@ -231,6 +231,7 @@ function initCatalogAndCart() {
   const state = {
     cart: loadCartFromStorage(),
     activeFilter: null,
+    searchQuery: "",
   };
   const savedDeliveryMode = loadDeliveryModeFromStorage();
   setDeliveryModeUi(refs, savedDeliveryMode);
@@ -291,6 +292,12 @@ function initCatalogAndCart() {
     saveDeliveryModeToStorage(deliveryMode);
     renderCart(refs, state.cart);
   });
+
+  refs.productSearchInput.addEventListener("input", () => {
+    state.searchQuery = refs.productSearchInput.value.trim();
+    renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
+    updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+  });
 }
 
 function getCatalogRefs() {
@@ -299,12 +306,13 @@ function getCatalogRefs() {
   const cartItems = document.querySelector("#cart-items");
   const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
+  const productSearchInput = document.querySelector("#product-search");
   const deliveryToggleInput = document.querySelector("#delivery-mode-toggle");
   const deliverySwitchControl = document.querySelector("#delivery-switch-control");
   const categoryCards = Array.from(document.querySelectorAll(".category-card"));
 
   if (
-    !(productList && productEmpty && cartItems && cartTotal && cartWhatsapp) ||
+    !(productList && productEmpty && cartItems && cartTotal && cartWhatsapp && productSearchInput) ||
     !(deliveryToggleInput && deliverySwitchControl)
   ) {
     return null;
@@ -316,13 +324,14 @@ function getCatalogRefs() {
     cartItems,
     cartTotal,
     cartWhatsapp,
+    productSearchInput,
     deliveryToggleInput,
     deliverySwitchControl,
     categoryCards,
   };
 }
 
-function renderCatalog(container, categoryId) {
+function renderCatalog(container, categoryId, searchQuery = "") {
   if (!categoryId) {
     container.innerHTML = "";
     return;
@@ -334,7 +343,16 @@ function renderCatalog(container, categoryId) {
     return;
   }
 
-  const cards = category.items
+  const normalizedQuery = normalizeText(searchQuery);
+  const filteredItems = category.items.filter((item) => {
+    if (!normalizedQuery) return true;
+    return normalizeText(item.name).includes(normalizedQuery);
+  });
+  const countLabel = normalizedQuery
+    ? `${filteredItems.length} de ${category.items.length} productos`
+    : `${category.items.length} productos`;
+
+  const cards = filteredItems
     .map(
       (product) => `
             <article class="product-card">
@@ -357,7 +375,7 @@ function renderCatalog(container, categoryId) {
     <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
       <div class="product-section-header">
         <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
-        <span class="product-section-count">${category.items.length} productos</span>
+        <span class="product-section-count">${countLabel}</span>
       </div>
       <div class="product-grid">
         ${cards}
@@ -416,11 +434,51 @@ function renderCart(refs, cartMap) {
 
 function applyCategoryFilter(refs, state, filter) {
   state.activeFilter = filter;
-  renderCatalog(refs.productList, filter);
-  refs.productEmpty.hidden = Boolean(filter);
+  refs.productSearchInput.value = "";
+  state.searchQuery = "";
+  renderCatalog(refs.productList, filter, state.searchQuery);
+  updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
   refs.categoryCards.forEach((card) => {
     card.classList.toggle("is-active", card.dataset.filter === filter);
   });
+}
+
+function updateProductEmptyState(refs, activeCategory, searchQuery) {
+  if (!activeCategory) {
+    refs.productEmpty.textContent = "Toca una categoria para abrir su catalogo.";
+    refs.productEmpty.hidden = false;
+    return;
+  }
+
+  const category = productCategories.find((item) => item.id === activeCategory);
+  if (!category) {
+    refs.productEmpty.textContent = "No se encontro la categoria seleccionada.";
+    refs.productEmpty.hidden = false;
+    return;
+  }
+
+  const normalizedQuery = normalizeText(searchQuery);
+  const hasMatch = category.items.some((item) =>
+    normalizeText(item.name).includes(normalizedQuery)
+  );
+
+  if (hasMatch) {
+    refs.productEmpty.hidden = true;
+    return;
+  }
+
+  refs.productEmpty.textContent =
+    normalizedQuery.length > 0
+      ? "No encontramos productos para tu busqueda."
+      : "Esta categoria no tiene productos disponibles.";
+  refs.productEmpty.hidden = false;
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 function addToCart(cartMap, productId, qty) {
