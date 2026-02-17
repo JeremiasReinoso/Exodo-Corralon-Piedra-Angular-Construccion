@@ -188,7 +188,7 @@
                     id="product-search"
                     class="product-search-input"
                     type="search"
-                    placeholder="Buscar materiales, herramientas o productos..."
+                    placeholder="Buscar materiales, herramientas o productos…"
                     autocomplete="off"
                   />
                   <button
@@ -201,6 +201,8 @@
                     ×
                   </button>
                 </div>
+                <div class="search-dropdown" id="search-dropdown" hidden></div>
+                <div class="search-feedback" id="search-feedback" aria-live="polite"></div>
               </div>
               <div class="product-list" id="product-list" aria-live="polite"></div>
               <div class="product-empty" id="product-empty">
@@ -214,7 +216,7 @@
                   <h3 id="cart-title">Tu carrito</h3>
                   <p class="muted">Resumen para enviar al corralon.</p>
                 </div>
-                <span class="cart-total" id="cart-total">0 items</span>
+                <span class="cart-total" id="cart-total">Pedido (0)</span>
               </div>
 
               <div class="cart-items" id="cart-items">
@@ -342,6 +344,7 @@
     <script src="app.js"></script>
   </body>
 </html>
+
 
 
 
