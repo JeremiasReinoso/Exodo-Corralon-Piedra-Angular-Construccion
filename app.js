@@ -297,7 +297,19 @@ function initCatalogAndCart() {
     state.searchQuery = refs.productSearchInput.value.trim();
     renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
     updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+    syncSearchClearButton(refs);
   });
+
+  refs.productSearchClear.addEventListener("click", () => {
+    refs.productSearchInput.value = "";
+    state.searchQuery = "";
+    renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
+    updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+    syncSearchClearButton(refs);
+    refs.productSearchInput.focus();
+  });
+
+  syncSearchClearButton(refs);
 }
 
 function getCatalogRefs() {
@@ -307,12 +319,21 @@ function getCatalogRefs() {
   const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
   const productSearchInput = document.querySelector("#product-search");
+  const productSearchClear = document.querySelector("#product-search-clear");
   const deliveryToggleInput = document.querySelector("#delivery-mode-toggle");
   const deliverySwitchControl = document.querySelector("#delivery-switch-control");
   const categoryCards = Array.from(document.querySelectorAll(".category-card"));
 
   if (
-    !(productList && productEmpty && cartItems && cartTotal && cartWhatsapp && productSearchInput) ||
+    !(
+      productList &&
+      productEmpty &&
+      cartItems &&
+      cartTotal &&
+      cartWhatsapp &&
+      productSearchInput &&
+      productSearchClear
+    ) ||
     !(deliveryToggleInput && deliverySwitchControl)
   ) {
     return null;
@@ -325,6 +346,7 @@ function getCatalogRefs() {
     cartTotal,
     cartWhatsapp,
     productSearchInput,
+    productSearchClear,
     deliveryToggleInput,
     deliverySwitchControl,
     categoryCards,
@@ -438,9 +460,15 @@ function applyCategoryFilter(refs, state, filter) {
   state.searchQuery = "";
   renderCatalog(refs.productList, filter, state.searchQuery);
   updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+  syncSearchClearButton(refs);
   refs.categoryCards.forEach((card) => {
     card.classList.toggle("is-active", card.dataset.filter === filter);
   });
+}
+
+function syncSearchClearButton(refs) {
+  const hasValue = refs.productSearchInput.value.trim().length > 0;
+  refs.productSearchClear.hidden = !hasValue;
 }
 
 function updateProductEmptyState(refs, activeCategory, searchQuery) {
