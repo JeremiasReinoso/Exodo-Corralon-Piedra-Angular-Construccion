@@ -171,16 +171,36 @@
           <div id="catalogo-activo" class="product-layout">
             <div class="product-catalog">
               <div class="product-search">
-                <label class="product-search-label" for="product-search">
-                  Buscar producto
-                </label>
-                <input
-                  id="product-search"
-                  class="product-search-input"
-                  type="search"
-                  placeholder="Ej: hierro, cemento, chapa..."
-                  autocomplete="off"
-                />
+                <div class="product-search-field">
+                  <span class="product-search-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                      <path
+                        d="m21 21-4.35-4.35m1.85-4.65a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    id="product-search"
+                    class="product-search-input"
+                    type="search"
+                    placeholder="Buscar materiales, herramientas o productos..."
+                    autocomplete="off"
+                  />
+                  <button
+                    class="product-search-clear"
+                    id="product-search-clear"
+                    type="button"
+                    aria-label="Limpiar busqueda"
+                    hidden
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
               <div class="product-list" id="product-list" aria-live="polite"></div>
               <div class="product-empty" id="product-empty">
