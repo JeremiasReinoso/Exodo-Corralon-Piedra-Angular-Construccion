@@ -20,6 +20,17 @@ const productCategories = [
       { id: "malla-4-15x15", name: "Malla 4mm 15x15", unit: "Unidad" },
       { id: "malla-5-15x15", name: "Malla 5mm 15x15", unit: "Unidad" },
       { id: "malla-6-15x15", name: "Malla 6mm 15x15", unit: "Unidad" },
+      { id: "perfil-c-80-16", name: "Perfil C 80 1.6", unit: "Unidad" },
+      { id: "perfil-c-80-20", name: "Perfil C 80 2.0", unit: "Unidad" },
+      { id: "perfil-c-100-16", name: "Perfil C 100 1.6", unit: "Unidad" },
+      { id: "perfil-c-100-20", name: "Perfil C 100 2.0", unit: "Unidad" },
+      { id: "perfil-c-120-20", name: "Perfil C 120 2.0", unit: "Unidad" },
+      {
+        id: "viguetas-tensolite",
+        name: "Viguetas tensolite",
+        unit: "Unidad",
+        meterOptions: ["2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6"],
+      },
     ],
   },
   {
@@ -33,17 +44,24 @@ const productCategories = [
       { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa" },
       { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad" },
       { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad" },
+      { id: "ladrillo-18x18x33", name: "Ladrillos 18x18x33", unit: "Unidad" },
+      { id: "ladrillo-comun", name: "Ladrillos comunes", unit: "Unidad" },
+      { id: "ladrillo-comun-selec", name: "Ladrillos comunes/seleccionados", unit: "Unidad" },
+      { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad" },
+      { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad" },
+      { id: "ripio-4mt", name: "Ripio x4mt", unit: "Viaje" },
+      { id: "arena-4mt", name: "Arena x4mt", unit: "Viaje" },
+      { id: "arena-mt", name: "Arena x mt", unit: "m3" },
+      { id: "ripio-mt", name: "Ripio x mt", unit: "m3" },
+      { id: "tierra-4mt", name: "Tierra x4mt", unit: "Viaje" },
+      { id: "relleno-4mt", name: "Relleno x4mt", unit: "Viaje" },
+      { id: "granza-mt", name: "Granza x mt", unit: "m3" },
     ],
   },
   {
     id: "electricidad",
     title: "Electricidad",
-    items: [
-      { id: "cable-25", name: "Cable taller 2.5mm", unit: "Rollo" },
-      { id: "caja-octogonal", name: "Caja octogonal", unit: "Unidad" },
-      { id: "llave-termica", name: "Llave t\u00E9rmica 2x25A", unit: "Unidad" },
-      { id: "toma-doble", name: "Tomacorriente doble", unit: "Unidad" },
-    ],
+    items: [],
   },
   {
     id: "sanitarios",
@@ -65,6 +83,8 @@ const productCategories = [
       { id: "chapa-cinc-c25", name: "Chapa cincalum c25", unit: "Unidad" },
       { id: "chapa-trap-c27", name: "Chapa trapezoidal c27", unit: "Unidad" },
       { id: "chapa-trap-c25", name: "Chapa trapezoidal c25", unit: "Unidad" },
+      { id: "aislante-5mm", name: "Aislantes 5mm", unit: "Unidad" },
+      { id: "aislante-10mm", name: "Aislantes 10mm", unit: "Unidad" },
     ],
   },
   {
@@ -73,8 +93,6 @@ const productCategories = [
     items: [
       { id: "clavos-2", name: "Clavos 2", unit: "Kg" },
       { id: "clavos-2-1-2", name: "Clavos 2 1/2", unit: "Kg" },
-      { id: "pala-punta", name: "Pala punta", unit: "Unidad" },
-      { id: "nivel-60", name: "Nivel 60cm", unit: "Unidad" },
     ],
   },
 ];
@@ -254,8 +272,10 @@ function initCatalogAndCart() {
 
     const card = target.closest(".product-card");
     const qtyInput = card ? card.querySelector("[data-qty-input]") : null;
+    const meterInput = card ? card.querySelector("[data-meter-select]") : null;
     const qty = parsePositiveInteger(qtyInput instanceof HTMLInputElement ? qtyInput.value : "1");
-    addToCart(state.cart, productId, qty);
+    const selectedMeter = meterInput instanceof HTMLSelectElement ? meterInput.value : "";
+    addToCart(state.cart, productId, qty, selectedMeter);
     saveCartToStorage(state.cart);
     renderCart(refs, state.cart);
   });
@@ -320,7 +340,12 @@ function initCatalogAndCart() {
     if (addBtn instanceof HTMLElement) {
       const productId = addBtn.dataset.searchAdd;
       if (!productId) return;
-      addToCart(state.cart, productId, 1);
+      const product = productIndex.get(productId);
+      const defaultMeter =
+        product && Array.isArray(product.meterOptions) && product.meterOptions.length > 0
+          ? product.meterOptions[0]
+          : "";
+      addToCart(state.cart, productId, 1, defaultMeter);
       saveCartToStorage(state.cart);
       renderCart(refs, state.cart);
       showSearchFeedback(refs, "Producto agregado");
@@ -430,12 +455,24 @@ function renderCatalog(container, categoryId, searchQuery = "") {
     : `${category.items.length} productos`;
 
   const cards = filteredItems
-    .map(
-      (product) => `
+    .map((product) => {
+      const meterField = Array.isArray(product.meterOptions)
+        ? `
+              <div class="product-qty-field">
+                <label for="meter-${product.id}">Metros</label>
+                <select id="meter-${product.id}" data-meter-select>
+                  ${product.meterOptions.map((meter) => `<option value="${meter}">${meter} m</option>`).join("")}
+                </select>
+              </div>
+            `
+        : "";
+
+      return `
             <article class="product-card">
               <div class="product-pick-label">Elegir producto</div>
               <h4>${product.name}</h4>
               <div class="product-meta">Unidad: ${product.unit}</div>
+              ${meterField}
               <div class="product-qty-field">
                 <label for="qty-${product.id}">Cantidad</label>
                 <input id="qty-${product.id}" type="number" min="1" step="1" value="1" data-qty-input />
@@ -444,8 +481,8 @@ function renderCatalog(container, categoryId, searchQuery = "") {
                 <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">Agregar</button>
               </div>
             </article>
-          `
-    )
+          `;
+    })
     .join("");
 
   container.innerHTML = `
@@ -463,10 +500,10 @@ function renderCatalog(container, categoryId, searchQuery = "") {
 
 function renderCart(refs, cartMap) {
   const items = Array.from(cartMap.entries())
-    .map(([id, qty]) => {
-      const product = productIndex.get(id);
+    .map(([cartId, qty]) => {
+      const product = resolveProductByCartId(cartId);
       if (!product) return null;
-      return { ...product, qty };
+      return { ...product, cartId, qty };
     })
     .filter(Boolean);
 
@@ -476,17 +513,17 @@ function renderCart(refs, cartMap) {
     refs.cartItems.innerHTML = items
       .map(
         (item) => `
-          <article class="cart-item" data-id="${item.id}">
+          <article class="cart-item" data-id="${item.cartId}">
             <div class="cart-item-header">
               <span>${item.name}</span>
               <span>${item.qty} ${item.unit}</span>
             </div>
             <div class="product-meta">Unidad: ${item.unit}</div>
             <div class="cart-item-controls">
-              <button class="qty-btn" data-action="decrease" data-id="${item.id}" aria-label="Disminuir cantidad">-</button>
+              <button class="qty-btn" data-action="decrease" data-id="${item.cartId}" aria-label="Disminuir cantidad">-</button>
               <span class="qty-value">${item.qty}</span>
-              <button class="qty-btn" data-action="increase" data-id="${item.id}" aria-label="Aumentar cantidad">+</button>
-              <button class="btn btn-outline-dark" data-action="remove" data-id="${item.id}">Quitar</button>
+              <button class="qty-btn" data-action="increase" data-id="${item.cartId}" aria-label="Aumentar cantidad">+</button>
+              <button class="btn btn-outline-dark" data-action="remove" data-id="${item.cartId}">Quitar</button>
             </div>
           </article>
         `
@@ -635,25 +672,26 @@ function normalizeText(value) {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-function addToCart(cartMap, productId, qty) {
-  const currentQty = cartMap.get(productId) || 0;
-  cartMap.set(productId, currentQty + qty);
+function addToCart(cartMap, productId, qty, meterValue = "") {
+  const cartId = buildCartItemId(productId, meterValue);
+  const currentQty = cartMap.get(cartId) || 0;
+  cartMap.set(cartId, currentQty + qty);
 }
 
-function updateCartQty(cartMap, productId, delta) {
-  const currentQty = cartMap.get(productId);
+function updateCartQty(cartMap, cartId, delta) {
+  const currentQty = cartMap.get(cartId);
   if (!currentQty) return;
 
   const nextQty = currentQty + delta;
   if (nextQty <= 0) {
-    cartMap.delete(productId);
+    cartMap.delete(cartId);
   } else {
-    cartMap.set(productId, nextQty);
+    cartMap.set(cartId, nextQty);
   }
 }
 
-function removeFromCart(cartMap, productId) {
-  cartMap.delete(productId);
+function removeFromCart(cartMap, cartId) {
+  cartMap.delete(cartId);
 }
 
 function parsePositiveInteger(rawValue) {
@@ -712,7 +750,7 @@ function loadCartFromStorage() {
       if (!entry || typeof entry !== "object") return;
       const id = typeof entry.id === "string" ? entry.id : "";
       const qty = parsePositiveInteger(entry.cantidad ?? entry.qty);
-      if (!id || !productIndex.has(id)) return;
+      if (!id || !resolveProductByCartId(id)) return;
       cartMap.set(id, qty);
     });
   } catch (_error) {
@@ -726,7 +764,7 @@ function saveCartToStorage(cartMap) {
   try {
     const serializable = Array.from(cartMap.entries())
       .map(([id, qty]) => {
-        const product = productIndex.get(id);
+        const product = resolveProductByCartId(id);
         if (!product) return null;
         return {
           id,
@@ -747,4 +785,28 @@ function buildProductIndex(categories) {
     category.items.forEach((item) => index.set(item.id, item));
   });
   return index;
+}
+
+function buildCartItemId(productId, meterValue) {
+  const cleanMeter = String(meterValue || "").trim();
+  if (!cleanMeter) return productId;
+  return `${productId}__${cleanMeter}`;
+}
+
+function resolveProductByCartId(cartId) {
+  const direct = productIndex.get(cartId);
+  if (direct) return direct;
+
+  const [baseId, meterValue] = String(cartId || "").split("__");
+  if (!baseId || !meterValue) return null;
+
+  const baseProduct = productIndex.get(baseId);
+  if (!baseProduct || !Array.isArray(baseProduct.meterOptions)) return null;
+  if (!baseProduct.meterOptions.includes(meterValue)) return null;
+
+  return {
+    ...baseProduct,
+    id: cartId,
+    name: `${baseProduct.name} ${meterValue}m`,
+  };
 }
