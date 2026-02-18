@@ -434,6 +434,13 @@ function getCatalogRefs() {
 }
 
 function renderCatalog(container, categoryId, searchQuery = "") {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (!categoryId && normalizedQuery) {
+    renderGlobalSearchCatalog(container, normalizedQuery);
+    return;
+  }
+
   if (!categoryId) {
     container.innerHTML = "";
     return;
@@ -445,7 +452,6 @@ function renderCatalog(container, categoryId, searchQuery = "") {
     return;
   }
 
-  const normalizedQuery = normalizeText(searchQuery);
   const filteredItems = category.items.filter((item) => {
     if (!normalizedQuery) return true;
     return normalizeText(item.name).includes(normalizedQuery);
@@ -490,6 +496,64 @@ function renderCatalog(container, categoryId, searchQuery = "") {
       <div class="product-section-header">
         <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
         <span class="product-section-count">${countLabel}</span>
+      </div>
+      <div class="product-grid">
+        ${cards}
+      </div>
+    </section>
+  `;
+}
+
+function renderGlobalSearchCatalog(container, normalizedQuery) {
+  const matches = [];
+  productCategories.forEach((category) => {
+    category.items.forEach((item) => {
+      if (!normalizeText(item.name).includes(normalizedQuery)) return;
+      matches.push({ ...item, categoryTitle: category.title });
+    });
+  });
+
+  if (!matches.length) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const cards = matches
+    .map((product) => {
+      const meterField = Array.isArray(product.meterOptions)
+        ? `
+              <div class="product-qty-field">
+                <label for="meter-${product.id}">Metros</label>
+                <select id="meter-${product.id}" data-meter-select>
+                  ${product.meterOptions.map((meter) => `<option value="${meter}">${meter} m</option>`).join("")}
+                </select>
+              </div>
+            `
+        : "";
+
+      return `
+            <article class="product-card">
+              <div class="product-pick-label">${product.categoryTitle}</div>
+              <h4>${product.name}</h4>
+              <div class="product-meta">Unidad: ${product.unit}</div>
+              ${meterField}
+              <div class="product-qty-field">
+                <label for="qty-${product.id}">Cantidad</label>
+                <input id="qty-${product.id}" type="number" min="1" step="1" value="1" data-qty-input />
+              </div>
+              <div class="product-actions">
+                <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">Agregar</button>
+              </div>
+            </article>
+          `;
+    })
+    .join("");
+
+  container.innerHTML = `
+    <section class="product-section" data-category="all-search" aria-labelledby="cat-all-search">
+      <div class="product-section-header">
+        <h3 id="cat-all-search" class="product-section-title">Resultados de búsqueda</h3>
+        <span class="product-section-count">${matches.length} productos</span>
       </div>
       <div class="product-grid">
         ${cards}
@@ -635,6 +699,19 @@ function showSearchFeedback(refs, message) {
 }
 
 function updateProductEmptyState(refs, activeCategory, searchQuery) {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (!activeCategory && normalizedQuery.length > 0) {
+    const hasGlobalMatch = productCategories.some((category) =>
+      category.items.some((item) => normalizeText(item.name).includes(normalizedQuery))
+    );
+    refs.productEmpty.textContent = hasGlobalMatch
+      ? ""
+      : "No encontramos productos para tu búsqueda.";
+    refs.productEmpty.hidden = hasGlobalMatch;
+    return;
+  }
+
   if (!activeCategory) {
     refs.productEmpty.textContent = "Tocá una categoría para abrir su catálogo.";
     refs.productEmpty.hidden = false;
@@ -648,7 +725,6 @@ function updateProductEmptyState(refs, activeCategory, searchQuery) {
     return;
   }
 
-  const normalizedQuery = normalizeText(searchQuery);
   const hasMatch = category.items.some((item) =>
     normalizeText(item.name).includes(normalizedQuery)
   );
