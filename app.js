@@ -25,12 +25,6 @@ const productCategories = [
       { id: "perfil-c-100-16", name: "Perfil C 100 1.6", unit: "Unidad" },
       { id: "perfil-c-100-20", name: "Perfil C 100 2.0", unit: "Unidad" },
       { id: "perfil-c-120-20", name: "Perfil C 120 2.0", unit: "Unidad" },
-      {
-        id: "viguetas-tensolite",
-        name: "Viguetas tensolite",
-        unit: "Unidad",
-        meterOptions: ["2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6"],
-      },
     ],
   },
   {
@@ -49,6 +43,12 @@ const productCategories = [
       { id: "ladrillo-comun-selec", name: "Ladrillos comunes/seleccionados", unit: "Unidad" },
       { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad" },
       { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad" },
+      {
+        id: "viguetas-tensolite",
+        name: "Viguetas tensolite",
+        unit: "Unidad",
+        meterOptions: ["2", "2.5", "3", "3.5", "4", "4.5", "5", "5.5", "6"],
+      },
       { id: "ripio-4mt", name: "Ripio x4mt", unit: "Viaje" },
       { id: "arena-4mt", name: "Arena x4mt", unit: "Viaje" },
       { id: "arena-mt", name: "Arena x mt", unit: "m3" },
