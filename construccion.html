@@ -140,7 +140,9 @@
                 </span>
                 <h4>Limpieza de obra</h4>
                 <p class="muted">Dejamos el proyecto listo para habitar.</p>
-                <a class="btn btn-outline-dark" href="https://wa.me/5493812500312?text=Hola%2C%20quiero%20consultar%20por%20limpieza%20de%20obra" target="_blank" rel="noopener">Consultar</a>
+                <button class="btn btn-outline-dark" type="button" data-open-cleaning-calendar>
+                  Consultar
+                </button>
               </article>
 
               <article class="service-premium-card">
@@ -217,6 +219,35 @@
           </div>
         </div>
       </section>
+
+      <div class="calendar-modal" id="cleaning-calendar-modal" hidden>
+        <div class="calendar-modal-backdrop" data-close-cleaning-calendar></div>
+        <div class="calendar-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cleaning-calendar-title">
+          <button class="calendar-modal-close" type="button" aria-label="Cerrar calendario" data-close-cleaning-calendar>
+            X
+          </button>
+          <div class="calendar-modal-head">
+            <h3 id="cleaning-calendar-title">Agendar limpieza de obra</h3>
+            <p class="muted">Elegí una fecha disponible para coordinar el servicio.</p>
+          </div>
+          <div class="calendar-toolbar">
+            <button type="button" class="calendar-nav-btn" id="calendar-prev-month" aria-label="Mes anterior">
+              Anterior
+            </button>
+            <strong id="calendar-month-label"></strong>
+            <button type="button" class="calendar-nav-btn" id="calendar-next-month" aria-label="Mes siguiente">
+              Siguiente
+            </button>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+          <button type="button" class="btn btn-primary calendar-confirm-btn" id="calendar-confirm-btn">
+            Confirmar fecha
+          </button>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">
@@ -240,6 +271,6 @@
       </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
