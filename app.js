@@ -887,9 +887,9 @@ function buildProductIndex(categories) {
 }
 
 function initCleaningCalendar() {
-  const openBtn = document.querySelector("[data-open-cleaning-calendar]");
+  const openButtons = Array.from(document.querySelectorAll("[data-open-cleaning-calendar]"));
   const modal = document.querySelector("#cleaning-calendar-modal");
-  if (!(openBtn && modal instanceof HTMLElement)) return;
+  if (!(openButtons.length > 0 && modal instanceof HTMLElement)) return;
 
   const closeTriggers = Array.from(modal.querySelectorAll("[data-close-cleaning-calendar]"));
   const monthLabel = modal.querySelector("#calendar-month-label");
@@ -920,7 +920,7 @@ function initCleaningCalendar() {
     document.body.style.overflow = "";
   };
 
-  openBtn.addEventListener("click", openModal);
+  openButtons.forEach((button) => button.addEventListener("click", openModal));
   closeTriggers.forEach((trigger) => trigger.addEventListener("click", closeModal));
 
   document.addEventListener("keydown", (event) => {
