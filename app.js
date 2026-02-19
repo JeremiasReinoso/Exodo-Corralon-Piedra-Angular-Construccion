@@ -912,7 +912,7 @@ function initCleaningCalendar() {
   const openModal = () => {
     modal.hidden = false;
     document.body.style.overflow = "hidden";
-    renderCleaningCalendar(state, monthLabel, grid, today);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
   };
 
   const closeModal = () => {
@@ -929,12 +929,12 @@ function initCleaningCalendar() {
 
   prevBtn.addEventListener("click", () => {
     state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() - 1, 1);
-    renderCleaningCalendar(state, monthLabel, grid, today);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
   });
 
   nextBtn.addEventListener("click", () => {
     state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() + 1, 1);
-    renderCleaningCalendar(state, monthLabel, grid, today);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
   });
 
   grid.addEventListener("click", (event) => {
@@ -947,7 +947,7 @@ function initCleaningCalendar() {
     const isoDate = dayBtn.dataset.calendarDate || "";
     if (!isoDate) return;
     state.selectedDate = isoDate;
-    renderCleaningCalendar(state, monthLabel, grid, today);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
   });
 
   confirmBtn.addEventListener("click", () => {
@@ -968,11 +968,11 @@ function initCleaningCalendar() {
 
     state.selectedDate = "";
     closeModal();
-    renderCleaningCalendar(state, monthLabel, grid, today);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
   });
 }
 
-function renderCleaningCalendar(state, monthLabelEl, gridEl, today) {
+function renderCleaningCalendar(state, monthLabelEl, gridEl, confirmBtnEl, today) {
   const year = state.viewDate.getFullYear();
   const month = state.viewDate.getMonth();
   const firstDay = new Date(year, month, 1);
@@ -1020,6 +1020,11 @@ function renderCleaningCalendar(state, monthLabelEl, gridEl, today) {
   }
 
   gridEl.innerHTML = dayCells.join("");
+  gridEl.classList.remove("is-month-enter");
+  // Force reflow to restart transition when month changes.
+  void gridEl.offsetWidth;
+  gridEl.classList.add("is-month-enter");
+  updateCalendarConfirmButton(confirmBtnEl, state.selectedDate);
 }
 
 function loadCleaningBookedFromStorage() {
@@ -1055,6 +1060,26 @@ function startOfDay(date) {
 function formatDateForWhatsapp(isoDate) {
   const [year, month, day] = isoDate.split("-");
   return `${day}/${month}/${year}`;
+}
+
+function updateCalendarConfirmButton(button, isoDate) {
+  if (!(button instanceof HTMLButtonElement)) return;
+
+  if (!isoDate) {
+    button.disabled = true;
+    button.textContent = "Confirmar fecha";
+    return;
+  }
+
+  button.disabled = false;
+  button.textContent = `Confirmar ${formatDateForButton(isoDate)}`;
+}
+
+function formatDateForButton(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  const monthName = date.toLocaleDateString("es-AR", { month: "long" });
+  return `${day} de ${monthName}`;
 }
 
 function buildCartItemId(productId, meterValue) {
