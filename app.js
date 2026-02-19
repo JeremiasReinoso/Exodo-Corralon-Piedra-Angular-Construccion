@@ -897,7 +897,8 @@ function initCleaningCalendar() {
   const prevBtn = modal.querySelector("#calendar-prev-month");
   const nextBtn = modal.querySelector("#calendar-next-month");
   const confirmBtn = modal.querySelector("#calendar-confirm-btn");
-  if (!(monthLabel && grid && prevBtn && nextBtn && confirmBtn)) return;
+  const modalTitle = modal.querySelector("#cleaning-calendar-title");
+  if (!(monthLabel && grid && prevBtn && nextBtn && confirmBtn && modalTitle)) return;
 
   const today = startOfDay(new Date());
   const localBookedDates = loadCleaningBookedFromStorage();
@@ -909,7 +910,9 @@ function initCleaningCalendar() {
     occupiedDates,
   };
 
-  const openModal = () => {
+  const openModal = (triggerBtn) => {
+    const customTitle = triggerBtn instanceof HTMLElement ? triggerBtn.dataset.calendarTitle : "";
+    modalTitle.textContent = customTitle || "Agendar limpieza de obra";
     modal.hidden = false;
     document.body.style.overflow = "hidden";
     renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
@@ -920,7 +923,9 @@ function initCleaningCalendar() {
     document.body.style.overflow = "";
   };
 
-  openButtons.forEach((button) => button.addEventListener("click", openModal));
+  openButtons.forEach((button) => {
+    button.addEventListener("click", () => openModal(button));
+  });
   closeTriggers.forEach((trigger) => trigger.addEventListener("click", closeModal));
 
   document.addEventListener("keydown", (event) => {
