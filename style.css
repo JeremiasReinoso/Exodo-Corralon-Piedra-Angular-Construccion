@@ -515,6 +515,14 @@ h2 {
   box-shadow: none;
 }
 
+.service-premium-card .service-calendar-btn {
+  min-width: 146px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
 /* CTA BAND */
 .cta-band {
   background: linear-gradient(120deg, #201f1d, #2f2a25 60%, #4a2f1a);
