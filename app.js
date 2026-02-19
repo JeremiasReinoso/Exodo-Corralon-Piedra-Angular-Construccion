@@ -6,6 +6,8 @@ const CART_STORAGE_KEY = "exodo_cart_v1";
 const DELIVERY_MODE_STORAGE_KEY = "exodo_delivery_mode_v1";
 const CART_WHATSAPP_BASE_URL = "https://wa.me/5493815704653";
 const MAX_SEARCH_RESULTS = 6;
+const CLEANING_BOOKED_STORAGE_KEY = "exodo_cleaning_booked_v1";
+const CLEANING_DEFAULT_OCCUPIED_DATES = ["2026-04-10", "2026-04-15"];
 
 const productCategories = [
   {
@@ -123,6 +125,7 @@ initBaseUi();
 document.addEventListener("DOMContentLoaded", () => {
   initBusinessStatus();
   initCatalogAndCart();
+  initCleaningCalendar();
 });
 
 function initBaseUi() {
@@ -881,6 +884,177 @@ function buildProductIndex(categories) {
     category.items.forEach((item) => index.set(item.id, item));
   });
   return index;
+}
+
+function initCleaningCalendar() {
+  const openBtn = document.querySelector("[data-open-cleaning-calendar]");
+  const modal = document.querySelector("#cleaning-calendar-modal");
+  if (!(openBtn && modal instanceof HTMLElement)) return;
+
+  const closeTriggers = Array.from(modal.querySelectorAll("[data-close-cleaning-calendar]"));
+  const monthLabel = modal.querySelector("#calendar-month-label");
+  const grid = modal.querySelector("#calendar-grid");
+  const prevBtn = modal.querySelector("#calendar-prev-month");
+  const nextBtn = modal.querySelector("#calendar-next-month");
+  const confirmBtn = modal.querySelector("#calendar-confirm-btn");
+  if (!(monthLabel && grid && prevBtn && nextBtn && confirmBtn)) return;
+
+  const today = startOfDay(new Date());
+  const localBookedDates = loadCleaningBookedFromStorage();
+  const occupiedDates = new Set([...CLEANING_DEFAULT_OCCUPIED_DATES, ...localBookedDates]);
+  const state = {
+    viewDate: new Date(today.getFullYear(), today.getMonth(), 1),
+    selectedDate: "",
+    localBookedDates,
+    occupiedDates,
+  };
+
+  const openModal = () => {
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderCleaningCalendar(state, monthLabel, grid, today);
+  };
+
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  };
+
+  openBtn.addEventListener("click", openModal);
+  closeTriggers.forEach((trigger) => trigger.addEventListener("click", closeModal));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  prevBtn.addEventListener("click", () => {
+    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() - 1, 1);
+    renderCleaningCalendar(state, monthLabel, grid, today);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() + 1, 1);
+    renderCleaningCalendar(state, monthLabel, grid, today);
+  });
+
+  grid.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const dayBtn = target.closest("[data-calendar-date]");
+    if (!(dayBtn instanceof HTMLButtonElement)) return;
+    if (dayBtn.disabled) return;
+
+    const isoDate = dayBtn.dataset.calendarDate || "";
+    if (!isoDate) return;
+    state.selectedDate = isoDate;
+    renderCleaningCalendar(state, monthLabel, grid, today);
+  });
+
+  confirmBtn.addEventListener("click", () => {
+    if (!state.selectedDate) {
+      window.alert("Seleccioná una fecha para continuar.");
+      return;
+    }
+
+    state.localBookedDates.add(state.selectedDate);
+    state.occupiedDates.add(state.selectedDate);
+    saveCleaningBookedToStorage(state.localBookedDates);
+
+    const message = `Hola, quiero agendar limpieza de obra para el día ${formatDateForWhatsapp(
+      state.selectedDate
+    )}.`;
+    const url = `https://wa.me/5493812500312?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank", "noopener");
+
+    state.selectedDate = "";
+    closeModal();
+    renderCleaningCalendar(state, monthLabel, grid, today);
+  });
+}
+
+function renderCleaningCalendar(state, monthLabelEl, gridEl, today) {
+  const year = state.viewDate.getFullYear();
+  const month = state.viewDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  monthLabelEl.textContent = firstDay.toLocaleDateString("es-AR", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const dayCells = [];
+
+  for (let i = 0; i < firstWeekday; i += 1) {
+    dayCells.push('<button type="button" class="calendar-day is-ghost" disabled aria-hidden="true"></button>');
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = new Date(year, month, day);
+    const isoDate = formatDateIso(date);
+    const isPast = date < today;
+    const isOccupied = state.occupiedDates.has(isoDate);
+    const isAvailable = !isPast && !isOccupied;
+    const isSelected = state.selectedDate === isoDate;
+    const classes = [
+      "calendar-day",
+      isPast ? "is-past" : "",
+      isOccupied ? "is-occupied" : "",
+      isAvailable ? "is-available" : "",
+      isSelected ? "is-selected" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    dayCells.push(`
+      <button
+        type="button"
+        class="${classes}"
+        data-calendar-date="${isoDate}"
+        ${isAvailable ? "" : "disabled"}
+      >
+        ${day}
+      </button>
+    `);
+  }
+
+  gridEl.innerHTML = dayCells.join("");
+}
+
+function loadCleaningBookedFromStorage() {
+  try {
+    const raw = localStorage.getItem(CLEANING_BOOKED_STORAGE_KEY);
+    const parsed = JSON.parse(raw || "[]");
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed.filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(String(item))));
+  } catch (_error) {
+    return new Set();
+  }
+}
+
+function saveCleaningBookedToStorage(dateSet) {
+  try {
+    localStorage.setItem(CLEANING_BOOKED_STORAGE_KEY, JSON.stringify(Array.from(dateSet)));
+  } catch (_error) {
+    // localStorage can fail in private mode or blocked contexts.
+  }
+}
+
+function formatDateIso(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function formatDateForWhatsapp(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  return `${day}/${month}/${year}`;
 }
 
 function buildCartItemId(productId, meterValue) {
