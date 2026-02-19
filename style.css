@@ -499,6 +499,12 @@ h2 {
   font-size: 1.12rem;
 }
 
+.service-premium-card .service-title-match {
+  font-size: 1.04rem;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
 .service-premium-card .muted {
   color: #5f6873;
 }
