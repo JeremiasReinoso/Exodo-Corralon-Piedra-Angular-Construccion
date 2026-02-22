@@ -906,13 +906,16 @@ function initCleaningCalendar() {
   const state = {
     viewDate: new Date(today.getFullYear(), today.getMonth(), 1),
     selectedDate: "",
+    selectedService: "limpieza de obra",
     localBookedDates,
     occupiedDates,
   };
 
   const openModal = (triggerBtn) => {
     const customTitle = triggerBtn instanceof HTMLElement ? triggerBtn.dataset.calendarTitle : "";
+    const customService = triggerBtn instanceof HTMLElement ? triggerBtn.dataset.calendarService : "";
     modalTitle.textContent = customTitle || "Agendar limpieza de obra";
+    state.selectedService = customService || "limpieza de obra";
     modal.hidden = false;
     document.body.style.overflow = "hidden";
     renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
@@ -965,7 +968,7 @@ function initCleaningCalendar() {
     state.occupiedDates.add(state.selectedDate);
     saveCleaningBookedToStorage(state.localBookedDates);
 
-    const message = `Hola, quiero agendar limpieza de obra para el día ${formatDateForWhatsapp(
+    const message = `Hola, quiero agendar ${state.selectedService} para el día ${formatDateForWhatsapp(
       state.selectedDate
     )}.`;
     const url = `https://wa.me/5493812500312?text=${encodeURIComponent(message)}`;
