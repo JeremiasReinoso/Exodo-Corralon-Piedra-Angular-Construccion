@@ -448,28 +448,6 @@ h2 {
   margin-top: 30px;
 }
 
-.services-block--featured {
-  margin-top: 22px;
-  padding: 80px;
-  border-radius: 24px;
-  background: #f3f5f7;
-  border: 1px solid #e4e8ee;
-}
-
-.services-intro {
-  margin: 0;
-  max-width: 72ch;
-  color: #5f6873;
-}
-
-.services-heading-line {
-  width: 120px;
-  height: 2px;
-  margin: 14px 0 24px;
-  background: linear-gradient(90deg, rgba(198, 91, 31, 0.6), rgba(198, 91, 31, 0.12));
-  border-radius: 999px;
-}
-
 .services-group-title {
   margin: 0 0 16px;
   font-size: 1.06rem;
@@ -1619,9 +1597,6 @@ h2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .services-block--featured {
-    padding: 44px 28px;
-  }
 }
 
 @media (max-width: 640px) {
@@ -1647,9 +1622,6 @@ h2 {
     padding: 24px;
   }
 
-  .services-block--featured {
-    padding: 30px 18px;
-  }
 }
 
 .status-badge{
