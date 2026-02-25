@@ -8,6 +8,7 @@
       name="description"
       content="Servicios de obra con planificación, control de calidad y seguimiento profesional."
     />
+    <link rel="icon" type="image/jpeg" href="Logo Constructora .jpeg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -31,8 +32,8 @@
           </div>
         </a>
         <nav class="nav-links">
-          <a href="index.html#servicios">Servicios</a>
-          <a href="#especialidades">Especialidades</a>
+          <a href="index.html#servicios">Inicio</a>
+          <a href="#servicios-integrales">Servicios</a>
           <a href="#metodo">Método</a>
           <a href="#contacto">Contacto</a>
         </nav>
@@ -40,7 +41,7 @@
           <a class="btn btn-outline-dark" href="index.html">Inicio</a>
           <a class="btn btn-primary" href="corralon.html">Corralón</a>
         </div>
-        <button class="burger" aria-label="Abrir menú">☰</button>
+        <button class="burger" aria-label="Abrir menú">&#9776;</button>
       </div>
     </header>
 
@@ -62,33 +63,145 @@
         </div>
       </section>
 
-      <section id="especialidades" class="section">
+      <section id="servicios-integrales" class="section constructora-services">
         <div class="container">
-          <span class="tag">Especialidades</span>
-          <h2>Tipos de obra que ejecutamos</h2>
-          <div class="services-grid">
-            <article class="service-card">
-              <h3>Planos y documentacion</h3>
-              <p class="muted">
-                Planos tecnicos y gestion completa con maestros mayores de obra y arquitectos.
-              </p>
-            </article>
-            <article class="service-card">
-              <h3>Obra nueva</h3>
-              <p class="muted">Casas, locales y edificios con documentación completa.</p>
-            </article>
-            <article class="service-card">
-              <h3>Ampliaciones</h3>
-              <p class="muted">Crecimiento planificado sin detener tu actividad.</p>
-            </article>
-            <article class="service-card">
-              <h3>Reformas integrales</h3>
-              <p class="muted">Readecuación de espacios con mínima interrupción.</p>
-            </article>
-            <article class="service-card">
-              <h3>Infraestructura</h3>
-              <p class="muted">Ejecuciones de gran escala con control de calidad.</p>
-            </article>
+          <span class="tag">Servicios</span>
+          <h2>Hacemos que tu obra sea simple, previsible y profesional.</h2>
+          <p class="lead">
+            Coordinamos equipos y fechas para que cada etapa de obra avance en tiempo y forma.
+          </p>
+
+          <div class="services-block">
+            <h3 class="services-group-title">Servicios principales</h3>
+            <div class="services-premium-grid">
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M4 18h16M6 18V8l6-3 6 3v10M9 10h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4>Proyectos y planos</h4>
+                <p class="muted">Diseñamos tu obra desde cero con planificación profesional.</p>
+                <a class="btn btn-outline-dark" href="https://wa.me/5493812500312?text=Hola%2C%20quiero%20consultar%20por%20proyectos%20y%20planos" target="_blank" rel="noopener">Consultar</a>
+              </article>
+
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M6 3h12v18l-6-3-6 3zM9 8h6M9 12h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4>Dirección de obra</h4>
+                <p class="muted">Supervisamos cada etapa para garantizar calidad.</p>
+                <a class="btn btn-outline-dark" href="https://wa.me/5493812500312?text=Hola%2C%20quiero%20consultar%20por%20direcci%C3%B3n%20de%20obra" target="_blank" rel="noopener">Consultar</a>
+              </article>
+
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M8 8h8M6 12h12M9 16h6M4 5h16v14H4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4>Coordinación de gremios</h4>
+                <p class="muted">Organizamos plomería, electricidad y demás equipos para que la obra avance sin demoras.</p>
+                <a class="btn btn-outline-dark" href="https://wa.me/5493812500312?text=Hola%2C%20quiero%20consultar%20por%20coordinaci%C3%B3n%20de%20gremios" target="_blank" rel="noopener">Consultar</a>
+              </article>
+            </div>
+          </div>
+
+          <div class="services-block">
+            <h3 class="services-group-title">Servicios integrales</h3>
+            <div class="services-premium-grid">
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M4 12h16M8 8v8M16 8v8M6 5h12v14H6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4>Plomería</h4>
+                <p class="muted">Instalaciones seguras y eficientes.</p>
+                <button
+                  class="btn btn-outline-dark service-calendar-btn"
+                  type="button"
+                  data-open-cleaning-calendar
+                  data-calendar-title="Agendar servicio de plomería"
+                  data-calendar-service="plomería"
+                >
+                  Consultar
+                </button>
+              </article>
+
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M13 2 5 14h6l-1 8 8-12h-6z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4>Electricidad</h4>
+                <p class="muted">Sistemas modernos y certificados.</p>
+                <button
+                  class="btn btn-outline-dark service-calendar-btn"
+                  type="button"
+                  data-open-cleaning-calendar
+                  data-calendar-title="Agendar servicio de electricidad"
+                  data-calendar-service="electricidad"
+                >
+                  Consultar
+                </button>
+              </article>
+
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M5 16h14M7 12h10M9 8h6M4 19h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4 class="service-title-match">Limpieza de obra</h4>
+                <p class="muted">Dejamos el proyecto listo para habitar.</p>
+                <button
+                  class="btn btn-outline-dark service-calendar-btn"
+                  type="button"
+                  data-open-cleaning-calendar
+                  data-calendar-title="Agendar limpieza de obra"
+                  data-calendar-service="limpieza de obra"
+                >
+                  Consultar
+                </button>
+              </article>
+
+              <article class="service-premium-card">
+                <span class="service-premium-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="img">
+                    <path d="M7 5h10M9 5v4m6-4v4M6 11h12l-1 8H7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                <h4 class="service-title-match">Limpieza residencial y turística</h4>
+                <p class="muted">Servicio de limpieza para hogares y espacios de alquiler turístico.</p>
+                <button
+                  class="btn btn-outline-dark service-calendar-btn"
+                  type="button"
+                  data-open-cleaning-calendar
+                  data-calendar-title="Agendar tu Limpieza residencial o turistica"
+                  data-calendar-service="limpieza residencial o turística"
+                >
+                  Consultar
+                </button>
+              </article>
+            </div>
+          </div>
+
+          <div class="services-block">
+            <h3 class="services-group-title">Calendario de disponibilidad</h3>
+            <p class="muted">Días habilitados para coordinar servicios durante el mes actual.</p>
+            <div class="service-calendar">
+              <div class="service-calendar-head">
+                <strong id="service-calendar-month-label"></strong>
+              </div>
+              <div class="service-calendar-weekdays" aria-hidden="true">
+                <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+              </div>
+              <div id="service-calendar-grid" class="service-calendar-grid"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -142,20 +255,49 @@
               >
             </div>
             <div class="contact-card">
-              <strong>Teléfono</strong>
-              <a href="tel:+543812500312">+54 381 250 0312</a>
-            </div>
-            <div class="contact-card">
               <strong>Dirección</strong>
-              <span class="muted">Ruta 35 El Mollar (misma ubicación que el corralón)</span>
+              <span class="muted">Ruta 355 El Mollar</span>
             </div>
             <div class="contact-card">
               <strong>Horarios</strong>
-              <span class="muted">Lun a Vie 8:00 a 18:00 · Sáb 8:00 a 13:00</span>
+              <span class="muted">Lun a Vie 8:00 a 18:00 · Sáb 8:00 a 14:00</span>
             </div>
           </div>
         </div>
       </section>
+
+      <div class="calendar-modal" id="cleaning-calendar-modal" hidden>
+        <div class="calendar-modal-backdrop" data-close-cleaning-calendar></div>
+        <div class="calendar-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="cleaning-calendar-title">
+          <button class="calendar-modal-close" type="button" aria-label="Cerrar calendario" data-close-cleaning-calendar>
+            X
+          </button>
+          <div class="calendar-modal-head">
+            <h3 id="cleaning-calendar-title">Agendar limpieza de obra</h3>
+            <p class="muted">Elegí una fecha disponible para coordinar el servicio.</p>
+          </div>
+          <div class="calendar-toolbar">
+            <button type="button" class="calendar-nav-btn" id="calendar-prev-month" aria-label="Mes anterior">
+              &#8249;
+            </button>
+            <strong id="calendar-month-label"></strong>
+            <button type="button" class="calendar-nav-btn" id="calendar-next-month" aria-label="Mes siguiente">
+              &#8250;
+            </button>
+          </div>
+          <div class="calendar-legend" aria-hidden="true">
+            <span><i class="dot dot-available"></i> Disponible</span>
+            <span><i class="dot dot-occupied"></i> Ocupado</span>
+          </div>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+          <button type="button" class="btn btn-primary calendar-confirm-btn" id="calendar-confirm-btn">
+            Confirmar fecha
+          </button>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">
@@ -179,10 +321,6 @@
       </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
-
-
-
-

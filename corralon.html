@@ -8,7 +8,7 @@
       name="description"
       content="Corralón con stock real, marcas confiables y entregas programadas por etapa."
     />
-    <link rel="icon" type="image/jpeg" href="Logo Constructora .jpeg" />
+    <link rel="icon" type="image/jpeg" href="Logo Corralon.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,7 +23,7 @@
         <a class="logo" href="index.html">
           <img
             class="logo-img"
-            src="Logo Constructora .jpeg"
+            src="Logo Corralon.jpg"
             alt="Éxodo Corralón"
           />
           <div class="logo-text">
@@ -33,8 +33,8 @@
         </a>
         <nav class="nav-links">
           <a href="index.html#servicios">Servicios</a>
-          <a href="#categorias">Categorías</a>
-          <a href="#productos">Productos</a>
+          <a href="#categorías">Categorías</a>
+          <a href="#categorías">Productos</a>
           <a href="#proceso">Proceso</a>
           <a href="#contacto">Contacto</a>
         </nav>
@@ -42,7 +42,7 @@
           <a class="btn btn-outline-dark" href="index.html">Inicio</a>
           <a class="btn btn-primary" href="construccion.html">Construcción</a>
         </div>
-        <button class="burger" aria-label="Abrir menú">☰</button>
+        <button class="burger" aria-label="Abrir menú">&#9776;</button>
       </div>
     </header>
 
@@ -56,7 +56,7 @@
             por etapa para que avances sin interrupciones.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#productos">Cotizar materiales</a>
+            <a class="btn btn-primary" href="#catalogo-activo">Cotizar materiales</a>
             <a class="btn btn-outline" href="https://wa.me/5493815704653" target="_blank" rel="noopener"
               >WhatsApp directo</a
             >
@@ -64,53 +64,182 @@
         </div>
       </section>
 
-      <section id="categorias" class="section">
+      <section id="categorías" class="section">
         <div class="container">
-          <span class="tag">Stock estratégico</span>
-          <h2>Todo lo esencial para obra gruesa y terminaciones</h2>
-          <div class="services-grid">
-            <article class="service-card">
-              <h3>Estructura y mampostería</h3>
-              <p class="muted">Cemento, ladrillos, hierro, cal, arena y piedra.</p>
-            </article>
-            <article class="service-card">
-              <h3>Instalaciones</h3>
-              <p class="muted">Sanitarios, cañerías, accesorios y grifería.</p>
-            </article>
-            <article class="service-card">
-              <h3>Terminaciones</h3>
-              <p class="muted">Cerámicos, revestimientos, pinturas y adhesivos.</p>
-            </article>
-            <article class="service-card">
-              <h3>Herramientas y seguridad</h3>
-              <p class="muted">Equipos, herramientas y elementos de protección.</p>
-            </article>
+          <span class="tag">Categorías</span>
+          <h2>Explorá por tipo de producto</h2>
+          <p class="lead">
+            Elegí una categoría para ir directo a lo que necesitás.
+          </p>
+          <div class="category-grid">
+            <a class="category-card" href="#catalogo-activo" data-filter="hierros">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M4 7h16v10H4zM7 7V5h10v2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Hierros</span>
+            </a>
+            <a class="category-card" href="#catalogo-activo" data-filter="cementos">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M7 3h10l2 6-7 12L5 9z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Cementos</span>
+            </a>
+            <a class="category-card" href="#catalogo-activo" data-filter="electricidad">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M13 2 5 14h6l-1 8 8-12h-6z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Electricidad</span>
+            </a>
+            <a class="category-card" href="#catalogo-activo" data-filter="sanitarios">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M7 4h10v4H7zM5 8h14l-2 6a5 5 0 0 1-10 0z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Sanitarios</span>
+            </a>
+            <a class="category-card" href="#catalogo-activo" data-filter="chapas">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M4 6h16v12H4zM8 6V4m8 2V4"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Chapas</span>
+            </a>
+            <a class="category-card" href="#catalogo-activo" data-filter="herramientas">
+              <span class="category-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path
+                    d="M14.5 5.5a4 4 0 0 0 4.5 5.5l-8.5 8.5-3.5-3.5 8.5-8.5a4 4 0 0 0 0-2z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <span class="category-name">Herramientas</span>
+            </a>
           </div>
         </div>
       </section>
 
-      <section id="productos" class="section">
+      <section id="productos" class="section-tight">
         <div class="container">
-          <span class="tag">Productos del corralon</span>
-          <h2>Materiales disponibles con precios claros</h2>
-          <p class="lead">
-            Selecciona los materiales que necesitas, sumalos al carrito y envia la lista por WhatsApp.
-          </p>
-
-          <div class="product-layout">
-            <div class="product-grid" id="product-list" aria-live="polite"></div>
+          <div id="catalogo-activo" class="product-layout">
+            <div class="product-catalog">
+              <h3>Productos disponibles</h3>
+              <div class="product-search">
+                <div class="product-search-field">
+                  <span class="product-search-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                      <path
+                        d="m21 21-4.35-4.35m1.85-4.65a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <input
+                    id="buscador-productos"
+                    class="product-search-input"
+                    type="search"
+                    placeholder="Buscar materiales, herramientas o productos..."
+                    autocomplete="off"
+                  />
+                  <button
+                    class="product-search-clear"
+                    id="limpiar-buscador-productos"
+                    type="button"
+                    aria-label="Limpiar búsqueda"
+                    hidden
+                  >
+                    X
+                  </button>
+                </div>
+                <div class="search-dropdown" id="sugerencias-productos" hidden></div>
+                <div class="search-feedback" id="feedback-buscador-productos" aria-live="polite"></div>
+              </div>
+              <div class="product-list" id="contenedor-productos" aria-live="polite"></div>
+              <div class="product-empty" id="estado-productos">
+                Tocá una categoría para abrir su catálogo.
+              </div>
+            </div>
 
             <aside class="cart-panel" aria-labelledby="cart-title">
               <div class="cart-header">
                 <div>
                   <h3 id="cart-title">Tu carrito</h3>
-                  <p class="muted">Resumen para enviar al corralon.</p>
+                  <p class="muted">Resumen para enviar al corralón.</p>
                 </div>
-                <span class="cart-total" id="cart-total">$0</span>
+                <span class="cart-total" id="cart-total">Pedido (0)</span>
               </div>
 
               <div class="cart-items" id="cart-items">
-                <p class="cart-empty">Todavia no agregaste productos.</p>
+                <p class="cart-empty">Todavía no agregaste productos.</p>
+              </div>
+
+              <div class="delivery-switch-wrap">
+                <span class="delivery-switch-title">Modalidad</span>
+                <div class="delivery-switch-control" id="delivery-switch-control" data-mode="retiro">
+                <span class="delivery-switch-label" data-role="retiro">Retiro en el local</span>
+                  <label class="delivery-switch" for="delivery-mode-toggle">
+                    <input
+                      id="delivery-mode-toggle"
+                      type="checkbox"
+                      aria-label="Cambiar modalidad entre retiro en el local y con envío"
+                    />
+                    <span class="delivery-switch-track" aria-hidden="true">
+                      <span class="delivery-switch-thumb"></span>
+                    </span>
+                  </label>
+                  <span class="delivery-switch-label" data-role="envio">Con envío</span>
+                </div>
               </div>
 
               <a
@@ -138,7 +267,7 @@
             </article>
             <article class="feature">
               <h4>2. Cotización clara</h4>
-              <p class="muted">Te pasamos precio y tiempos con alternativas.</p>
+              <p class="muted">Te pasamos opciones y tiempos con alternativas.</p>
             </article>
             <article class="feature">
               <h4>3. Entrega programada</h4>
@@ -175,17 +304,14 @@
                 >+54 9 381 570 4653</a
               >
             </div>
-            <div class="contact-card">
-              <strong>Teléfono</strong>
-              <a href="tel:+543815704653">+54 381 570 4653</a>
-            </div>
+          
             <div class="contact-card">
               <strong>Dirección</strong>
-              <span class="muted">Ruta 35 El Mollar</span>
+              <span class="muted">Ruta 355 El Mollar</span>
             </div>
             <div class="contact-card">
               <strong>Horarios</strong>
-              <span class="muted">Lun a Vie 8:00 a 18:00 · Sáb 8:00 a 13:00</span>
+              <span class="muted">Lun a Vie 8:00 a 18:00 Sáb 8:00 a 14:00</span>
             </div>
           </div>
         </div>
@@ -216,7 +342,6 @@
     <script src="app.js"></script>
   </body>
 </html>
-
 
 
 

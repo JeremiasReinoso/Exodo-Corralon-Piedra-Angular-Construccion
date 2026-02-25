@@ -1,41 +1,217 @@
 /* -------------------------------------------------
-   EXODO | Interacciones livianas
+   EXODO | Interacciones del sitio
 -------------------------------------------------- */
 
-const burger = document.querySelector(".burger");
-const navLinks = document.querySelector(".nav-links");
+const CART_STORAGE_KEY = "exodo_cart_v1";
+const DELIVERY_MODE_STORAGE_KEY = "exodo_delivery_mode_v1";
+const CART_WHATSAPP_BASE_URL = "https://wa.me/5493815704653";
+const MAX_SEARCH_RESULTS = 6;
+const CLEANING_BOOKED_STORAGE_KEY = "exodo_cleaning_booked_v1";
+const CLEANING_DEFAULT_OCCUPIED_DATES = ["2026-04-10", "2026-04-15"];
+const SERVICE_AVAILABLE_DAYS = [1, 2, 5, 6, 9, 10, 13, 14, 17, 18, 20, 21, 24, 25, 27, 28];
 
-if (burger && navLinks) {
-  burger.addEventListener("click", () => {
-    navLinks.classList.toggle("open");
-  });
-}
+const productCategories = [
+  {
+    id: "hierros",
+    title: "Hierros",
+    items: [
+      { id: "alambre", name: "Alambre", unit: "Kg" },
+      { id: "hierro-6", name: "Hierro del 6", unit: "Barra" },
+      { id: "hierro-8", name: "Hierro del 8", unit: "Barra" },
+      { id: "hierro-10", name: "Hierro del 10", unit: "Barra" },
+      { id: "hierro-12", name: "Hierro del 12", unit: "Barra" },
+      { id: "malla-4-15x15", name: "Malla 4mm 15x15", unit: "Unidad" },
+      { id: "malla-5-15x15", name: "Malla 5mm 15x15", unit: "Unidad" },
+      { id: "malla-6-15x15", name: "Malla 6mm 15x15", unit: "Unidad" },
+      { id: "perfil-c-80-16", name: "Perfil C 80 1.6", unit: "Unidad" },
+      { id: "perfil-c-80-20", name: "Perfil C 80 2.0", unit: "Unidad" },
+      { id: "perfil-c-100-16", name: "Perfil C 100 1.6", unit: "Unidad" },
+      { id: "perfil-c-100-20", name: "Perfil C 100 2.0", unit: "Unidad" },
+      { id: "perfil-c-120-20", name: "Perfil C 120 2.0", unit: "Unidad" },
+    ],
+  },
+  {
+    id: "cementos",
+    title: "Cementos",
+    items: [
+      { id: "cemento-25", name: "Cemento x25kg", unit: "Bolsa" },
+      { id: "plasticor-25", name: "Plasticor x25kg", unit: "Bolsa" },
+      { id: "fino-weber-25", name: "Fino Weber x25kg", unit: "Bolsa" },
+      { id: "pegamento-ceramico-weber", name: "Pegamento p/ cer\u00E1mico Weber", unit: "Bolsa" },
+      { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa" },
+      { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad" },
+      { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad" },
+      { id: "ladrillo-18x18x33", name: "Ladrillos 18x18x33", unit: "Unidad" },
+      { id: "ladrillo-comun", name: "Ladrillos comunes", unit: "Unidad" },
+      { id: "ladrillo-comun-selec", name: "Ladrillos comunes/seleccionados", unit: "Unidad" },
+      { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad" },
+      { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad" },
+      {
+        id: "viguetas-tensolite",
+        name: "Viguetas tensolite",
+        unit: "Unidad",
+        meterOptions: [
+          "2.00",
+          "2.20",
+          "2.40",
+          "2.60",
+          "2.80",
+          "3.00",
+          "3.20",
+          "3.40",
+          "3.60",
+          "3.80",
+          "4.00",
+          "4.20",
+          "4.40",
+          "4.60",
+          "4.80",
+          "5.00",
+          "5.20",
+          "5.40",
+          "5.60",
+        ],
+      },
+      { id: "ripio-4mt", name: "Ripio x4mt", unit: "Viaje" },
+      { id: "arena-4mt", name: "Arena x4mt", unit: "Viaje" },
+      { id: "arena-mt", name: "Arena x mt", unit: "m3" },
+      { id: "ripio-mt", name: "Ripio x mt", unit: "m3" },
+      { id: "tierra-4mt", name: "Tierra x4mt", unit: "Viaje" },
+      { id: "relleno-4mt", name: "Relleno x4mt", unit: "Viaje" },
+      { id: "granza-mt", name: "Granza x mt", unit: "m3" },
+    ],
+  },
+  {
+    id: "electricidad",
+    title: "Electricidad",
+    items: [],
+  },
+  {
+    id: "sanitarios",
+    title: "Sanitarios",
+    items: [
+      { id: "pvc-110", name: "Ca\u00F1o PVC 110", unit: "Unidad" },
+      { id: "codo-110", name: "Codo PVC 110", unit: "Unidad" },
+      { id: "curva-110", name: "Curva PVC 110", unit: "Unidad" },
+      { id: "pegamento-pvc", name: "Pegamento p/ PVC", unit: "Unidad" },
+    ],
+  },
+  {
+    id: "chapas",
+    title: "Chapas",
+    items: [
+      { id: "chapa-galv-c27", name: "Chapa galvanizada c27", unit: "Unidad" },
+      { id: "chapa-galv-c25", name: "Chapa galvanizada c25", unit: "Unidad" },
+      { id: "chapa-cinc-c27", name: "Chapa cincalum c27", unit: "Unidad" },
+      { id: "chapa-cinc-c25", name: "Chapa cincalum c25", unit: "Unidad" },
+      { id: "chapa-trap-c27", name: "Chapa trapezoidal c27", unit: "Unidad" },
+      { id: "chapa-trap-c25", name: "Chapa trapezoidal c25", unit: "Unidad" },
+      { id: "aislante-5mm", name: "Aislantes 5mm", unit: "Unidad" },
+      { id: "aislante-10mm", name: "Aislantes 10mm", unit: "Unidad" },
+    ],
+  },
+  {
+    id: "herramientas",
+    title: "Herramientas",
+    items: [
+      { id: "clavos-2", name: "Clavos 2", unit: "Kg" },
+      { id: "clavos-2-1-2", name: "Clavos 2 1/2", unit: "Kg" },
+    ],
+  },
+];
 
-// Smooth scroll for in-page anchors
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-  anchor.addEventListener("click", (e) => {
-    const targetId = anchor.getAttribute("href");
-    if (!targetId || targetId === "#") return;
-    const target = document.querySelector(targetId);
-    if (!target) return;
-    e.preventDefault();
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-    navLinks?.classList.remove("open");
-  });
+const productIndex = buildProductIndex(productCategories);
+
+initBaseUi();
+document.addEventListener("DOMContentLoaded", () => {
+  initBusinessStatus();
+  initCatalogAndCart();
+  initServiceAvailabilityCalendar();
+  initCleaningCalendar();
 });
 
-// Dynamic year
-const yearEl = document.querySelector("[data-year]");
-if (yearEl) {
-  yearEl.textContent = new Date().getFullYear();
+function initBaseUi() {
+  initBurgerMenu();
+  initAnchorScroll();
+  initFooterYear();
+  initScrollEffects();
 }
 
-// Scroll reveal (IntersectionObserver)
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-let revealObserver = null;
+function initBurgerMenu() {
+  const burger = document.querySelector(".burger");
+  const navLinks = document.querySelector(".nav-links");
 
-if (!prefersReducedMotion) {
-  revealObserver = new IntersectionObserver(
+  if (!burger || !navLinks) return;
+  burger.addEventListener("click", () => navLinks.classList.toggle("open"));
+}
+
+function initAnchorScroll() {
+  const navLinks = document.querySelector(".nav-links");
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", (event) => {
+      const targetId = anchor.getAttribute("href");
+      if (!targetId || targetId === "#") return;
+
+      const target = document.querySelector(targetId);
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (navLinks) navLinks.classList.remove("open");
+    });
+  });
+
+  if (window.location.hash) {
+    const target = document.querySelector(window.location.hash);
+    if (target) {
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }
+}
+
+function initFooterYear() {
+  const yearEl = document.querySelector("[data-year]");
+  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+}
+
+function initScrollEffects() {
+  const nav = document.querySelector(".nav");
+  const hero = document.querySelector(".hero, .page-hero");
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const revealObserver = buildRevealObserver(prefersReducedMotion);
+  registerReveal(document.querySelectorAll("section, h1, h2, h3, h4"), revealObserver, prefersReducedMotion);
+
+  const updateNavState = () => {
+    if (nav) nav.classList.toggle("is-scrolled", window.scrollY > 10);
+  };
+
+  let ticking = false;
+  const updateParallax = () => {
+    if (!hero || prefersReducedMotion) return;
+    const offset = Math.min(window.scrollY * 0.08, 40);
+    hero.style.setProperty("--hero-parallax", `calc(50% + ${offset}px)`);
+    ticking = false;
+  };
+
+  const onScroll = () => {
+    updateNavState();
+    if (ticking || !hero || prefersReducedMotion) return;
+    ticking = true;
+    window.requestAnimationFrame(updateParallax);
+  };
+
+  updateNavState();
+  if (!prefersReducedMotion) updateParallax();
+  window.addEventListener("scroll", onScroll, { passive: true });
+}
+
+function buildRevealObserver(prefersReducedMotion) {
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) return null;
+
+  return new IntersectionObserver(
     (entries, observer) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -50,279 +226,935 @@ if (!prefersReducedMotion) {
   );
 }
 
-const registerReveal = (elements) => {
-  elements.forEach((el) => {
-    if (!(el instanceof Element)) return;
-    if (el.dataset.reveal === "true") return;
-    el.dataset.reveal = "true";
-    el.classList.add("reveal");
+function registerReveal(elements, observer, prefersReducedMotion) {
+  elements.forEach((element) => {
+    if (!(element instanceof Element)) return;
+    if (element.dataset.reveal === "true") return;
+
+    element.dataset.reveal = "true";
+    element.classList.add("reveal");
 
     if (prefersReducedMotion) {
-      el.classList.add("active");
+      element.classList.add("active");
       return;
     }
 
-    revealObserver?.observe(el);
+    if (observer) {
+      observer.observe(element);
+    } else {
+      element.classList.add("active");
+    }
   });
-};
-
-// Navbar scroll state
-const nav = document.querySelector(".nav");
-const updateNavState = () => {
-  if (!nav) return;
-  nav.classList.toggle("is-scrolled", window.scrollY > 10);
-};
-
-// Parallax (very subtle) for hero background
-const hero = document.querySelector(".hero, .page-hero");
-let ticking = false;
-const updateParallax = () => {
-  if (!hero || prefersReducedMotion) return;
-  const offset = Math.min(window.scrollY * 0.08, 40);
-  hero.style.setProperty("--hero-parallax", `calc(50% + ${offset}px)`);
-  ticking = false;
-};
-
-const onScroll = () => {
-  updateNavState();
-  if (ticking || !hero || prefersReducedMotion) return;
-  ticking = true;
-  window.requestAnimationFrame(updateParallax);
-};
-
-updateNavState();
-if (!prefersReducedMotion) {
-  updateParallax();
-}
-window.addEventListener("scroll", onScroll, { passive: true });
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  registerReveal(document.querySelectorAll("section, h1, h2, h3, h4"));
-
-function negocioAbierto(hA, mA, hC, mC) {
-
-  const ahora = new Date();
-
-  const horaArgentina = new Date(
-    ahora.toLocaleString("en-US", { timeZone: "America/Argentina/Buenos_Aires" })
-  );
-
-  const minutosActuales =
-    horaArgentina.getHours() * 60 + horaArgentina.getMinutes();
-
-  const apertura = hA * 60 + mA;
-  const cierre = hC * 60 + mC;
-
-  return minutosActuales >= apertura && minutosActuales < cierre;
 }
 
-const corralon = negocioAbierto(8,30,18,0);
-const constructora = negocioAbierto(8,30,21,0);
+function initBusinessStatus() {
+  setBusinessStatus("corralon", isBusinessOpen(8, 30, 18, 0));
+  setBusinessStatus("constructora", isBusinessOpen(8, 30, 21, 0));
+}
 
-function ponerEstado(nombre, abierto){
-  const badge = document.querySelector(`[data-status="${nombre}"]`);
+function isBusinessOpen(openHour, openMinute, closeHour, closeMinute) {
+  const now = new Date();
+  const localDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Argentina/Buenos_Aires" }));
+  const currentMinutes = localDate.getHours() * 60 + localDate.getMinutes();
+  const opening = openHour * 60 + openMinute;
+  const closing = closeHour * 60 + closeMinute;
+  return currentMinutes >= opening && currentMinutes < closing;
+}
 
-  if(!badge) return;
+function setBusinessStatus(name, open) {
+  const badge = document.querySelector(`[data-status="${name}"]`);
+  if (!badge) return;
 
   const text = badge.querySelector(".status-text");
+  const statusText = open ? "Abierto ahora" : "Cerrado";
   if (text) {
-    text.textContent = abierto ? "Abierto ahora" : "Cerrado";
+    text.textContent = statusText;
   } else {
-    badge.textContent = abierto ? "Abierto ahora" : "Cerrado";
+    badge.textContent = statusText;
   }
-  badge.classList.add(abierto ? "status-open" : "status-closed");
+
+  badge.classList.remove("status-open", "status-closed");
+  badge.classList.add(open ? "status-open" : "status-closed");
 }
 
-ponerEstado("corralon", corralon);
-ponerEstado("constructora", constructora);
+function initCatalogAndCart() {
+  const refs = getCatalogRefs();
+  if (!refs) return;
 
-  const productList = document.querySelector("#product-list");
+  const state = {
+    cart: loadCartFromStorage(),
+    activeFilter: "all",
+    searchQuery: "",
+  };
+  const savedDeliveryMode = loadDeliveryModeFromStorage();
+  setDeliveryModeUi(refs, savedDeliveryMode);
+
+  renderCatalog(refs.productList, state.activeFilter);
+  renderCart(refs, state.cart);
+  applyCategoryFilter(refs, state, "all");
+
+  refs.productList.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.dataset.action !== "add") return;
+
+    const productId = target.dataset.id;
+    if (!productId) return;
+
+    const product = productIndex.get(productId);
+    if (!product) return;
+
+    const card = target.closest(".product-card");
+    const qtyInput = card ? card.querySelector("[data-qty-input]") : null;
+    const meterInput = card ? card.querySelector("[data-meter-select]") : null;
+    const qty = parsePositiveInteger(qtyInput instanceof HTMLInputElement ? qtyInput.value : "1");
+    const selectedMeter = meterInput instanceof HTMLSelectElement ? meterInput.value : "";
+    addToCart(state.cart, productId, qty, selectedMeter);
+    saveCartToStorage(state.cart);
+    renderCart(refs, state.cart);
+  });
+
+  refs.cartItems.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const action = target.dataset.action;
+    const productId = target.dataset.id;
+    if (!action || !productId) return;
+
+    if (action === "increase") updateCartQty(state.cart, productId, 1);
+    if (action === "decrease") updateCartQty(state.cart, productId, -1);
+    if (action === "remove") removeFromCart(state.cart, productId);
+
+    saveCartToStorage(state.cart);
+    renderCart(refs, state.cart);
+  });
+
+  refs.categoryCards.forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
+      const filter = card.dataset.filter || null;
+      applyCategoryFilter(refs, state, filter);
+
+      const activeCatalog = document.querySelector("#catalogo-activo");
+      if (activeCatalog) activeCatalog.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  refs.deliveryToggleInput.addEventListener("change", () => {
+    const deliveryMode = getSelectedDeliveryMode(refs.deliveryToggleInput);
+    setDeliveryModeUi(refs, deliveryMode);
+    saveDeliveryModeToStorage(deliveryMode);
+    renderCart(refs, state.cart);
+  });
+
+  refs.productSearchInput.addEventListener("input", () => {
+    state.searchQuery = refs.productSearchInput.value.trim();
+    renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
+    updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+    syncSearchClearButton(refs);
+    renderSearchDropdown(refs, state.searchQuery);
+  });
+
+  refs.productSearchClear.addEventListener("click", () => {
+    refs.productSearchInput.value = "";
+    state.searchQuery = "";
+    renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
+    updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+    syncSearchClearButton(refs);
+    closeSearchDropdown(refs);
+    refs.productSearchInput.focus();
+  });
+
+  refs.searchDropdown.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const addBtn = target.closest("[data-search-add]");
+    if (addBtn instanceof HTMLElement) {
+      const productId = addBtn.dataset.searchAdd;
+      if (!productId) return;
+      const product = productIndex.get(productId);
+      const defaultMeter =
+        product && Array.isArray(product.meterOptions) && product.meterOptions.length > 0
+          ? product.meterOptions[0]
+          : "";
+      addToCart(state.cart, productId, 1, defaultMeter);
+      saveCartToStorage(state.cart);
+      renderCart(refs, state.cart);
+      showSearchFeedback(refs, "Producto agregado");
+      return;
+    }
+
+    const categoryBtn = target.closest("[data-search-category]");
+    if (categoryBtn instanceof HTMLElement) {
+      const categoryId = categoryBtn.dataset.searchCategory || null;
+      applyCategoryFilter(refs, state, categoryId);
+      closeSearchDropdown(refs);
+      refs.productSearchInput.blur();
+      return;
+    }
+  });
+
+  refs.productSearchInput.addEventListener("focus", () => {
+    if (refs.productSearchInput.value.trim()) {
+      renderSearchDropdown(refs, refs.productSearchInput.value.trim());
+    }
+  });
+
+  refs.productSearchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSearchDropdown(refs);
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (!refs.productSearchWrap.contains(target)) {
+      closeSearchDropdown(refs);
+    }
+  });
+
+  syncSearchClearButton(refs);
+}
+
+function getCatalogRefs() {
+  const productList = queryAny(["#contenedor-productos", "#product-list"]);
+  const productEmpty = queryAny(["#estado-productos", "#product-empty"]);
   const cartItems = document.querySelector("#cart-items");
   const cartTotal = document.querySelector("#cart-total");
   const cartWhatsapp = document.querySelector("#cart-whatsapp");
+  const productSearchWrap = document.querySelector(".product-search");
+  const productSearchInput = queryAny(["#buscador-productos", "#product-search"]);
+  const productSearchClear = queryAny(["#limpiar-buscador-productos", "#product-search-clear"]);
+  const searchDropdown = queryAny(["#sugerencias-productos", "#search-dropdown"]);
+  const searchFeedback = queryAny(["#feedback-buscador-productos", "#search-feedback"]);
+  const deliveryToggleInput = document.querySelector("#delivery-mode-toggle");
+  const deliverySwitchControl = document.querySelector("#delivery-switch-control");
+  const categoryCards = Array.from(document.querySelectorAll(".category-card"));
 
-  if (productList && cartItems && cartTotal && cartWhatsapp) {
-    const products = [
-      { id: "alambre", name: "Alambre", unit: "Kg", price: 0 },
-      { id: "hierro-6", name: "Hierro del 6", unit: "Barra", price: 0 },
-      { id: "hierro-8", name: "Hierro del 8", unit: "Barra", price: 0 },
-      { id: "hierro-10", name: "Hierro del 10", unit: "Barra", price: 0 },
-      { id: "hierro-12", name: "Hierro del 12", unit: "Barra", price: 0 },
-      { id: "chapa-galv-c27", name: "Chapa galvanizada c27", unit: "Unidad", price: 0 },
-      { id: "chapa-galv-c25", name: "Chapa galvanizada c25", unit: "Unidad", price: 0 },
-      { id: "chapa-cinc-c27", name: "Chapa cincalum c27", unit: "Unidad", price: 0 },
-      { id: "chapa-cinc-c25", name: "Chapa cincalum c25", unit: "Unidad", price: 0 },
-      { id: "chapa-trap-c27", name: "Chapa trapezoidal c27", unit: "Unidad", price: 0 },
-      { id: "chapa-trap-c25", name: "Chapa trapezoidal c25", unit: "Unidad", price: 0 },
-      { id: "perfil-c80-16", name: "Perfil C 80 1.6", unit: "Unidad", price: 0 },
-      { id: "perfil-c80-20", name: "Perfil C 80 2.0", unit: "Unidad", price: 0 },
-      { id: "perfil-c100-16", name: "Perfil C 100 1.6", unit: "Unidad", price: 0 },
-      { id: "perfil-c100-20", name: "Perfil C 100 2.0", unit: "Unidad", price: 0 },
-      { id: "perfil-c120-20", name: "Perfil C 120 2.0", unit: "Unidad", price: 0 },
-      { id: "malla-4-15x15", name: "Malla 4mm 15x15", unit: "Unidad", price: 0 },
-      { id: "malla-5-15x15", name: "Malla 5mm 15x15", unit: "Unidad", price: 0 },
-      { id: "malla-6-15x15", name: "Malla 6mm 15x15", unit: "Unidad", price: 0 },
-      { id: "clavos-2", name: "Clavos 2”", unit: "Kg", price: 0 },
-      { id: "clavos-2-1-2", name: "Clavos 2 1/2", unit: "Kg", price: 0 },
-      { id: "cemento-25", name: "Cemento x25kg", unit: "Bolsa", price: 0 },
-      { id: "plasticor-25", name: "Plasticor x25kg", unit: "Bolsa", price: 0 },
-      { id: "fino-weber-25", name: "Fino Weber x25kg", unit: "Bolsa", price: 0 },
-      { id: "pegamento-ceramico-weber", name: "Pegamento p/ cerámico Weber", unit: "Bolsa", price: 0 },
-      { id: "cal-hidratada", name: "Cal hidratada", unit: "Bolsa", price: 0 },
-      { id: "ladrillo-12x18x33", name: "Ladrillos 12x18x33", unit: "Unidad", price: 0 },
-      { id: "ladrillo-8x18x33", name: "Ladrillos 8x18x33", unit: "Unidad", price: 0 },
-      { id: "ladrillo-18x18x33", name: "Ladrillos 18x18x33", unit: "Unidad", price: 0 },
-      { id: "ladrillo-comun", name: "Ladrillos comunes", unit: "Unidad", price: 0 },
-      { id: "ladrillo-comun-sel", name: "Ladrillos comunes/seleccionados", unit: "Unidad", price: 0 },
-      { id: "bovedilla-10", name: "Bovedillas 10mm", unit: "Unidad", price: 0 },
-      { id: "bovedilla-12", name: "Bovedillas 12mm", unit: "Unidad", price: 0 },
-      {
-        id: "viguetas-tensolite",
-        name: "Viguetas Tensolite (1.0 a 5.0 m, cada 20 cm)",
-        unit: "m",
-        price: 0,
-      },
-      { id: "ripio-4mt", name: "Ripio x4mt", unit: "m3", price: 0 },
-      { id: "arena-4mt", name: "Arena x4mt", unit: "m3", price: 0 },
-      { id: "arena-mt", name: "Arena x mt", unit: "m3", price: 0 },
-      { id: "ripio-mt", name: "Ripio x mt", unit: "m3", price: 0 },
-      { id: "tierra-4mt", name: "Tierra x4mt", unit: "m3", price: 0 },
-      { id: "relleno-4mt", name: "Relleno x4mt", unit: "m3", price: 0 },
-      { id: "granza-mt", name: "Granza x mt", unit: "m3", price: 0 },
-      { id: "pvc-110", name: "Caño PVC 110", unit: "Unidad", price: 0 },
-      { id: "codo-110", name: "Codo PVC 110", unit: "Unidad", price: 0 },
-      { id: "curva-110", name: "Curva PVC 110", unit: "Unidad", price: 0 },
-      { id: "pegamento-pvc", name: "Pegamento p/ PVC", unit: "Unidad", price: 0 },
-      { id: "aislantes-5", name: "Aislantes 5mm", unit: "Unidad", price: 0 },
-      { id: "aislantes-10", name: "Aislantes 10mm", unit: "Unidad", price: 0 },
-    ];
+  if (
+    !(
+      productList &&
+      productEmpty &&
+      cartItems &&
+      cartTotal &&
+      cartWhatsapp &&
+      productSearchWrap &&
+      productSearchInput &&
+      productSearchClear &&
+      searchDropdown &&
+      searchFeedback
+    ) ||
+    !(deliveryToggleInput && deliverySwitchControl)
+  ) {
+    return null;
+  }
 
-    const priceFormatter = new Intl.NumberFormat("es-AR", {
-      style: "currency",
-      currency: "ARS",
-      maximumFractionDigits: 0,
-    });
+  return {
+    productList,
+    productEmpty,
+    cartItems,
+    cartTotal,
+    cartWhatsapp,
+    productSearchWrap,
+    productSearchInput,
+    productSearchClear,
+    searchDropdown,
+    searchFeedback,
+    deliveryToggleInput,
+    deliverySwitchControl,
+    categoryCards,
+  };
+}
 
-    const cart = new Map();
+function queryAny(selectors) {
+  for (const selector of selectors) {
+    const element = document.querySelector(selector);
+    if (element) return element;
+  }
+  return null;
+}
 
-    const renderProducts = () => {
-      productList.innerHTML = products
-        .map(
-          (product) => `
+function renderCatalog(container, categoryId, searchQuery = "") {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (!categoryId || categoryId === "all") {
+    renderAllCatalog(container, normalizedQuery);
+    return;
+  }
+
+  const category = productCategories.find((item) => item.id === categoryId);
+  if (!category) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const filteredItems = category.items.filter((item) =>
+    normalizedQuery ? normalizeText(item.name).includes(normalizedQuery) : true
+  );
+  const countLabel = normalizedQuery
+    ? `${filteredItems.length} de ${category.items.length} productos`
+    : `${category.items.length} productos`;
+
+  container.innerHTML = `
+    <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
+      <div class="product-section-header">
+        <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
+        <span class="product-section-count">${countLabel}</span>
+      </div>
+      <div class="product-grid">
+        ${filteredItems.map((product) => buildProductCardMarkup(product, category.title)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderAllCatalog(container, normalizedQuery = "") {
+  const sections = productCategories
+    .map((category) => {
+      const items = category.items.filter((item) =>
+        normalizedQuery ? normalizeText(item.name).includes(normalizedQuery) : true
+      );
+      if (!items.length) return "";
+
+      const countLabel = normalizedQuery
+        ? `${items.length} de ${category.items.length} productos`
+        : `${category.items.length} productos`;
+
+      return `
+        <section class="product-section" data-category="${category.id}" aria-labelledby="cat-${category.id}">
+          <div class="product-section-header">
+            <h3 id="cat-${category.id}" class="product-section-title">${category.title}</h3>
+            <span class="product-section-count">${countLabel}</span>
+          </div>
+          <div class="product-grid">
+            ${items.map((product) => buildProductCardMarkup(product, category.title)).join("")}
+          </div>
+        </section>
+      `;
+    })
+    .join("");
+
+  container.innerHTML = sections;
+}
+
+function buildProductCardMarkup(product, categoryTitle) {
+  const meterField = Array.isArray(product.meterOptions)
+    ? `
+          <div class="product-qty-field">
+            <label for="meter-${product.id}">Metros</label>
+            <select id="meter-${product.id}" data-meter-select>
+              ${product.meterOptions.map((meter) => `<option value="${meter}">${meter} m</option>`).join("")}
+            </select>
+          </div>
+        `
+    : "";
+  const priceLabel = product.price ? product.price : "Consultar";
+
+  return `
         <article class="product-card">
+          <div class="product-pick-label">${categoryTitle || "Producto"}</div>
           <h4>${product.name}</h4>
+          <div class="product-meta">Categoria: ${categoryTitle || "General"}</div>
+          <div class="product-price">Precio: ${priceLabel}</div>
           <div class="product-meta">Unidad: ${product.unit}</div>
-          <div class="product-price">${priceFormatter.format(product.price)}</div>
+          ${meterField}
+          <div class="product-qty-field">
+            <label for="qty-${product.id}">Cantidad</label>
+            <input id="qty-${product.id}" type="number" min="1" step="1" value="1" data-qty-input />
+          </div>
           <div class="product-actions">
-            <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">
-              Agregar
-            </button>
+            <button class="btn btn-outline-dark" data-action="add" data-id="${product.id}">Agregar</button>
           </div>
         </article>
-      `
-        )
-        .join("");
+      `;
+}
 
-      registerReveal(productList.querySelectorAll(".product-card"));
-    };
+function renderCart(refs, cartMap) {
+  const items = Array.from(cartMap.entries())
+    .map(([cartId, qty]) => {
+      const product = resolveProductByCartId(cartId);
+      if (!product) return null;
+      return { ...product, cartId, qty };
+    })
+    .filter(Boolean);
 
-    const buildWhatsappMessage = () => {
-      if (cart.size === 0) return "Hola, quiero consultar por materiales del corralon.";
-      const lines = ["Hola, quiero consultar por estos materiales:"];
-      cart.forEach((item) => {
-        lines.push(
-          `- ${item.name} x${item.qty} (${priceFormatter.format(item.price * item.qty)})`
-        );
-      });
-      lines.push(`Total estimado: ${priceFormatter.format(getCartTotal())}`);
-      return lines.join("\n");
-    };
-
-    const getCartTotal = () => {
-      let total = 0;
-      cart.forEach((item) => {
-        total += item.price * item.qty;
-      });
-      return total;
-    };
-
-    const renderCart = () => {
-      if (cart.size === 0) {
-        cartItems.innerHTML = '<p class="cart-empty">Todavia no agregaste productos.</p>';
-      } else {
-        cartItems.innerHTML = Array.from(cart.values())
-          .map(
-            (item) => `
-          <div class="cart-item" data-id="${item.id}">
+  if (items.length === 0) {
+    refs.cartItems.innerHTML = '<p class="cart-empty">Todavía no agregaste productos.</p>';
+  } else {
+    refs.cartItems.innerHTML = items
+      .map(
+        (item) => `
+          <article class="cart-item" data-id="${item.cartId}">
             <div class="cart-item-header">
               <span>${item.name}</span>
-              <span>${priceFormatter.format(item.price * item.qty)}</span>
+              <span>${item.qty} ${item.unit}</span>
             </div>
             <div class="product-meta">Unidad: ${item.unit}</div>
             <div class="cart-item-controls">
-              <button class="qty-btn" data-action="decrease" data-id="${item.id}">-</button>
+              <button class="qty-btn" data-action="decrease" data-id="${item.cartId}" aria-label="Disminuir cantidad">-</button>
               <span class="qty-value">${item.qty}</span>
-              <button class="qty-btn" data-action="increase" data-id="${item.id}">+</button>
-              <button class="btn btn-outline-dark" data-action="remove" data-id="${item.id}">
-                Quitar
-              </button>
+              <button class="qty-btn" data-action="increase" data-id="${item.cartId}" aria-label="Aumentar cantidad">+</button>
+              <button class="btn btn-outline-dark" data-action="remove" data-id="${item.cartId}">Quitar</button>
             </div>
-          </div>
+          </article>
         `
-          )
-          .join("");
-      }
-
-      const totalValue = getCartTotal();
-      cartTotal.textContent = priceFormatter.format(totalValue);
-
-      if (cart.size === 0) {
-        cartWhatsapp.classList.add("is-disabled");
-        cartWhatsapp.href = "https://wa.me/5493815704653";
-      } else {
-        cartWhatsapp.classList.remove("is-disabled");
-        cartWhatsapp.href =
-          "https://wa.me/5493815704653?text=" + encodeURIComponent(buildWhatsappMessage());
-      }
-    };
-
-    productList.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLElement)) return;
-      if (target.dataset.action !== "add") return;
-      const id = target.dataset.id;
-      const product = products.find((item) => item.id === id);
-      if (!product) return;
-      const current = cart.get(id);
-      if (current) {
-        current.qty += 1;
-      } else {
-        cart.set(id, { ...product, qty: 1 });
-      }
-      renderCart();
-    });
-
-    cartItems.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof HTMLElement)) return;
-      const action = target.dataset.action;
-      const id = target.dataset.id;
-      if (!action || !id) return;
-      const item = cart.get(id);
-      if (!item) return;
-
-      if (action === "increase") item.qty += 1;
-      if (action === "decrease") item.qty -= 1;
-      if (action === "remove") item.qty = 0;
-
-      if (item.qty <= 0) {
-        cart.delete(id);
-      }
-      renderCart();
-    });
-
-    renderProducts();
-    renderCart();
+      )
+      .join("");
   }
-});
+
+  const totalItems = items.reduce((sum, item) => sum + item.qty, 0);
+  refs.cartTotal.textContent = `Pedido (${totalItems})`;
+
+  if (items.length === 0) {
+    refs.cartWhatsapp.classList.add("is-disabled");
+    refs.cartWhatsapp.href = CART_WHATSAPP_BASE_URL;
+  } else {
+    const deliveryMode = getSelectedDeliveryMode(refs.deliveryToggleInput);
+    refs.cartWhatsapp.classList.remove("is-disabled");
+    refs.cartWhatsapp.href = `${CART_WHATSAPP_BASE_URL}?text=${encodeURIComponent(
+      buildWhatsappMessage(items, totalItems, deliveryMode)
+    )}`;
+  }
+}
+
+function applyCategoryFilter(refs, state, filter) {
+  state.activeFilter = filter || "all";
+  refs.productSearchInput.value = "";
+  state.searchQuery = "";
+  renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
+  updateProductEmptyState(refs, state.activeFilter, state.searchQuery);
+  syncSearchClearButton(refs);
+  closeSearchDropdown(refs);
+  refs.categoryCards.forEach((card) => {
+    card.classList.toggle("is-active", card.dataset.filter === state.activeFilter);
+  });
+}
+
+function syncSearchClearButton(refs) {
+  const hasValue = refs.productSearchInput.value.trim().length > 0;
+  refs.productSearchClear.hidden = !hasValue;
+}
+
+function renderSearchDropdown(refs, rawQuery) {
+  const query = normalizeText(rawQuery);
+  if (!query) {
+    closeSearchDropdown(refs);
+    return;
+  }
+
+  const productMatches = [];
+  productCategories.forEach((category) => {
+    category.items.forEach((item) => {
+      if (!normalizeText(item.name).includes(query)) return;
+      productMatches.push(item);
+    });
+  });
+
+  const categoryMatches = productCategories.filter((category) =>
+    normalizeText(category.title).includes(query)
+  );
+
+  const rows = [];
+  if (productMatches.length) {
+    rows.push('<div class="search-group-label">Productos</div>');
+    productMatches.slice(0, MAX_SEARCH_RESULTS).forEach((item) => {
+      const highlighted = highlightMatch(item.name, rawQuery);
+      rows.push(`
+        <div class="search-item">
+          <div class="search-item-main">
+            <div class="search-item-name">${highlighted}</div>
+          </div>
+          <button class="search-add-btn" type="button" data-search-add="${item.id}">Agregar</button>
+        </div>
+      `);
+    });
+  }
+
+  const freeSlots = Math.max(0, MAX_SEARCH_RESULTS - Math.min(productMatches.length, MAX_SEARCH_RESULTS));
+  if (freeSlots > 0 && categoryMatches.length) {
+    rows.push('<div class="search-group-label">Categorías</div>');
+    categoryMatches.slice(0, freeSlots).forEach((category) => {
+      rows.push(`
+        <button class="search-category-item" type="button" data-search-category="${category.id}">
+          Ver todos los productos de ${category.title}
+        </button>
+      `);
+    });
+  }
+
+  if (!rows.length) {
+    rows.push(
+      '<div class="search-empty">No hay coincidencias para tu busqueda. Proba con otro termino o escribinos por WhatsApp.</div>'
+    );
+  }
+
+  refs.searchDropdown.innerHTML = rows.join("");
+  refs.searchDropdown.hidden = false;
+}
+
+function highlightMatch(text, rawQuery) {
+  const safeText = String(text || "");
+  const query = String(rawQuery || "").trim();
+  if (!query) return safeText;
+
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`(${escaped})`, "ig");
+  return safeText.replace(regex, '<mark class="search-highlight">$1</mark>');
+}
+
+function closeSearchDropdown(refs) {
+  refs.searchDropdown.hidden = true;
+  refs.searchDropdown.innerHTML = "";
+}
+
+function showSearchFeedback(refs, message) {
+  refs.searchFeedback.textContent = message;
+  refs.searchFeedback.classList.add("show");
+  clearTimeout(showSearchFeedback.timer);
+  showSearchFeedback.timer = setTimeout(() => {
+    refs.searchFeedback.classList.remove("show");
+  }, 900);
+}
+
+function updateProductEmptyState(refs, activeCategory, searchQuery) {
+  const normalizedQuery = normalizeText(searchQuery);
+
+  if (activeCategory === "all") {
+    const hasAnyMatch = productCategories.some((category) =>
+      category.items.some((item) =>
+        normalizedQuery ? normalizeText(item.name).includes(normalizedQuery) : true
+      )
+    );
+    refs.productEmpty.textContent = normalizedQuery
+      ? "No encontramos productos para tu busqueda."
+      : "No hay productos disponibles en este momento.";
+    refs.productEmpty.hidden = hasAnyMatch;
+    return;
+  }
+
+  if (!activeCategory && normalizedQuery.length > 0) {
+    const hasGlobalMatch = productCategories.some((category) =>
+      category.items.some((item) => normalizeText(item.name).includes(normalizedQuery))
+    );
+    refs.productEmpty.textContent = hasGlobalMatch
+      ? ""
+      : "No encontramos productos para tu búsqueda.";
+    refs.productEmpty.hidden = hasGlobalMatch;
+    return;
+  }
+
+  if (!activeCategory) {
+    refs.productEmpty.textContent = "Tocá una categoría para abrir su catálogo.";
+    refs.productEmpty.hidden = false;
+    return;
+  }
+
+  const category = productCategories.find((item) => item.id === activeCategory);
+  if (!category) {
+    refs.productEmpty.textContent = "No se encontró la categoría seleccionada.";
+    refs.productEmpty.hidden = false;
+    return;
+  }
+
+  const hasMatch = category.items.some((item) =>
+    normalizeText(item.name).includes(normalizedQuery)
+  );
+
+  if (hasMatch) {
+    refs.productEmpty.hidden = true;
+    return;
+  }
+
+  refs.productEmpty.textContent =
+    normalizedQuery.length > 0
+      ? "No encontramos productos para tu búsqueda."
+      : "Esta categoría no tiene productos disponibles.";
+  refs.productEmpty.hidden = false;
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function addToCart(cartMap, productId, qty, meterValue = "") {
+  const cartId = buildCartItemId(productId, meterValue);
+  const currentQty = cartMap.get(cartId) || 0;
+  cartMap.set(cartId, currentQty + qty);
+}
+
+function updateCartQty(cartMap, cartId, delta) {
+  const currentQty = cartMap.get(cartId);
+  if (!currentQty) return;
+
+  const nextQty = currentQty + delta;
+  if (nextQty <= 0) {
+    cartMap.delete(cartId);
+  } else {
+    cartMap.set(cartId, nextQty);
+  }
+}
+
+function removeFromCart(cartMap, cartId) {
+  cartMap.delete(cartId);
+}
+
+function parsePositiveInteger(rawValue) {
+  const parsed = Number.parseInt(String(rawValue || "").trim(), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function buildWhatsappMessage(items, totalItems, deliveryMode) {
+  const deliveryText =
+    deliveryMode === "envio" ? "con envío" : "con retiro en el local";
+  const lines = [`Hola quiero averiguar estos productos ${deliveryText}:`];
+  items.forEach((item) => lines.push(`- ${item.name}: ${item.qty} ${item.unit}`));
+  lines.push(`Total de items: ${totalItems}`);
+  return lines.join("\n");
+}
+
+function getSelectedDeliveryMode(toggleInput) {
+  return toggleInput && toggleInput.checked ? "envio" : "retiro";
+}
+
+function setDeliveryModeUi(refs, mode) {
+  const safeMode = mode === "envio" ? "envio" : "retiro";
+  refs.deliveryToggleInput.checked = safeMode === "envio";
+  refs.deliverySwitchControl.dataset.mode = safeMode;
+}
+
+function loadDeliveryModeFromStorage() {
+  try {
+    const raw = localStorage.getItem(DELIVERY_MODE_STORAGE_KEY);
+    return raw === "envio" ? "envio" : "retiro";
+  } catch (_error) {
+    return "retiro";
+  }
+}
+
+function saveDeliveryModeToStorage(mode) {
+  const safeMode = mode === "envio" ? "envio" : "retiro";
+  try {
+    localStorage.setItem(DELIVERY_MODE_STORAGE_KEY, safeMode);
+  } catch (_error) {
+    // localStorage can fail in private mode or blocked contexts.
+  }
+}
+
+function loadCartFromStorage() {
+  const cartMap = new Map();
+
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    if (!raw) return cartMap;
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return cartMap;
+
+    parsed.forEach((entry) => {
+      if (!entry || typeof entry !== "object") return;
+      const id = typeof entry.id === "string" ? entry.id : "";
+      const qty = parsePositiveInteger(entry.cantidad ?? entry.qty);
+      if (!id || !resolveProductByCartId(id)) return;
+      cartMap.set(id, qty);
+    });
+  } catch (_error) {
+    return cartMap;
+  }
+
+  return cartMap;
+}
+
+function saveCartToStorage(cartMap) {
+  try {
+    const serializable = Array.from(cartMap.entries())
+      .map(([id, qty]) => {
+        const product = resolveProductByCartId(id);
+        if (!product) return null;
+        return {
+          id,
+          nombre: product.name,
+          cantidad: qty,
+        };
+      })
+      .filter(Boolean);
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(serializable));
+  } catch (_error) {
+    // localStorage can fail in private mode or blocked contexts.
+  }
+}
+
+function buildProductIndex(categories) {
+  const index = new Map();
+  categories.forEach((category) => {
+    category.items.forEach((item) => index.set(item.id, item));
+  });
+  return index;
+}
+
+function initServiceAvailabilityCalendar() {
+  const monthLabel = document.querySelector("#service-calendar-month-label");
+  const grid = document.querySelector("#service-calendar-grid");
+  if (!(monthLabel && grid)) return;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  monthLabel.textContent = firstDay.toLocaleDateString("es-AR", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const cells = [];
+  for (let i = 0; i < firstWeekday; i += 1) {
+    cells.push('<button type="button" class="service-day is-empty" disabled aria-hidden="true"></button>');
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const isAvailable = SERVICE_AVAILABLE_DAYS.includes(day);
+    const stateClass = isAvailable ? "is-available" : "is-unavailable";
+    const stateLabel = isAvailable ? "Disponible" : "No disponible";
+    cells.push(`
+      <button type="button" class="service-day ${stateClass}" aria-label="${day}: ${stateLabel}">
+        <span class="service-day-number">${day}</span>
+      </button>
+    `);
+  }
+
+  grid.innerHTML = cells.join("");
+}
+
+function initCleaningCalendar() {
+  const openButtons = Array.from(document.querySelectorAll("[data-open-cleaning-calendar]"));
+  const modal = document.querySelector("#cleaning-calendar-modal");
+  if (!(openButtons.length > 0 && modal instanceof HTMLElement)) return;
+
+  const closeTriggers = Array.from(modal.querySelectorAll("[data-close-cleaning-calendar]"));
+  const monthLabel = modal.querySelector("#calendar-month-label");
+  const grid = modal.querySelector("#calendar-grid");
+  const prevBtn = modal.querySelector("#calendar-prev-month");
+  const nextBtn = modal.querySelector("#calendar-next-month");
+  const confirmBtn = modal.querySelector("#calendar-confirm-btn");
+  const modalTitle = modal.querySelector("#cleaning-calendar-title");
+  if (!(monthLabel && grid && prevBtn && nextBtn && confirmBtn && modalTitle)) return;
+
+  const today = startOfDay(new Date());
+  const localBookedDates = loadCleaningBookedFromStorage();
+  const occupiedDates = new Set([...CLEANING_DEFAULT_OCCUPIED_DATES, ...localBookedDates]);
+  const state = {
+    viewDate: new Date(today.getFullYear(), today.getMonth(), 1),
+    selectedDate: "",
+    selectedService: "limpieza de obra",
+    localBookedDates,
+    occupiedDates,
+  };
+
+  const openModal = (triggerBtn) => {
+    const customTitle = triggerBtn instanceof HTMLElement ? triggerBtn.dataset.calendarTitle : "";
+    const customService = triggerBtn instanceof HTMLElement ? triggerBtn.dataset.calendarService : "";
+    modalTitle.textContent = customTitle || "Agendar limpieza de obra";
+    state.selectedService = customService || "limpieza de obra";
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
+  };
+
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  };
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", () => openModal(button));
+  });
+  closeTriggers.forEach((trigger) => trigger.addEventListener("click", closeModal));
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  prevBtn.addEventListener("click", () => {
+    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() - 1, 1);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
+  });
+
+  nextBtn.addEventListener("click", () => {
+    state.viewDate = new Date(state.viewDate.getFullYear(), state.viewDate.getMonth() + 1, 1);
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
+  });
+
+  grid.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const dayBtn = target.closest("[data-calendar-date]");
+    if (!(dayBtn instanceof HTMLButtonElement)) return;
+    if (dayBtn.disabled) return;
+
+    const isoDate = dayBtn.dataset.calendarDate || "";
+    if (!isoDate) return;
+    state.selectedDate = isoDate;
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
+  });
+
+  confirmBtn.addEventListener("click", () => {
+    if (!state.selectedDate) {
+      window.alert("Seleccioná una fecha para continuar.");
+      return;
+    }
+
+    state.localBookedDates.add(state.selectedDate);
+    state.occupiedDates.add(state.selectedDate);
+    saveCleaningBookedToStorage(state.localBookedDates);
+
+    const message = `Hola, quiero agendar ${state.selectedService} para el día ${formatDateForWhatsapp(
+      state.selectedDate
+    )}.`;
+    const url = `https://wa.me/5493812500312?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank", "noopener");
+
+    state.selectedDate = "";
+    closeModal();
+    renderCleaningCalendar(state, monthLabel, grid, confirmBtn, today);
+  });
+}
+
+function renderCleaningCalendar(state, monthLabelEl, gridEl, confirmBtnEl, today) {
+  const year = state.viewDate.getFullYear();
+  const month = state.viewDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = firstDay.getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  monthLabelEl.textContent = firstDay.toLocaleDateString("es-AR", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const dayCells = [];
+
+  for (let i = 0; i < firstWeekday; i += 1) {
+    dayCells.push('<button type="button" class="calendar-day is-ghost" disabled aria-hidden="true"></button>');
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = new Date(year, month, day);
+    const isoDate = formatDateIso(date);
+    const isPast = date < today;
+    const isOccupied = state.occupiedDates.has(isoDate);
+    const isAvailable = !isPast && !isOccupied;
+    const isSelected = state.selectedDate === isoDate;
+    const classes = [
+      "calendar-day",
+      isPast ? "is-past" : "",
+      isOccupied ? "is-occupied" : "",
+      isAvailable ? "is-available" : "",
+      isSelected ? "is-selected" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    dayCells.push(`
+      <button
+        type="button"
+        class="${classes}"
+        data-calendar-date="${isoDate}"
+        ${isAvailable ? "" : "disabled"}
+      >
+        ${day}
+      </button>
+    `);
+  }
+
+  gridEl.innerHTML = dayCells.join("");
+  gridEl.classList.remove("is-month-enter");
+  // Force reflow to restart transition when month changes.
+  void gridEl.offsetWidth;
+  gridEl.classList.add("is-month-enter");
+  updateCalendarConfirmButton(confirmBtnEl, state.selectedDate);
+}
+
+function loadCleaningBookedFromStorage() {
+  try {
+    const raw = localStorage.getItem(CLEANING_BOOKED_STORAGE_KEY);
+    const parsed = JSON.parse(raw || "[]");
+    if (!Array.isArray(parsed)) return new Set();
+    return new Set(parsed.filter((item) => /^\d{4}-\d{2}-\d{2}$/.test(String(item))));
+  } catch (_error) {
+    return new Set();
+  }
+}
+
+function saveCleaningBookedToStorage(dateSet) {
+  try {
+    localStorage.setItem(CLEANING_BOOKED_STORAGE_KEY, JSON.stringify(Array.from(dateSet)));
+  } catch (_error) {
+    // localStorage can fail in private mode or blocked contexts.
+  }
+}
+
+function formatDateIso(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function formatDateForWhatsapp(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  return `${day}/${month}/${year}`;
+}
+
+function updateCalendarConfirmButton(button, isoDate) {
+  if (!(button instanceof HTMLButtonElement)) return;
+
+  if (!isoDate) {
+    button.disabled = true;
+    button.textContent = "Confirmar fecha";
+    return;
+  }
+
+  button.disabled = false;
+  button.textContent = `Confirmar ${formatDateForButton(isoDate)}`;
+}
+
+function formatDateForButton(isoDate) {
+  const [year, month, day] = isoDate.split("-");
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  const monthName = date.toLocaleDateString("es-AR", { month: "long" });
+  return `${day} de ${monthName}`;
+}
+
+function buildCartItemId(productId, meterValue) {
+  const cleanMeter = String(meterValue || "").trim();
+  if (!cleanMeter) return productId;
+  return `${productId}__${cleanMeter}`;
+}
+
+function resolveProductByCartId(cartId) {
+  const direct = productIndex.get(cartId);
+  if (direct) return direct;
+
+  const [baseId, meterValue] = String(cartId || "").split("__");
+  if (!baseId || !meterValue) return null;
+
+  const baseProduct = productIndex.get(baseId);
+  if (!baseProduct || !Array.isArray(baseProduct.meterOptions)) return null;
+  if (!baseProduct.meterOptions.includes(meterValue)) return null;
+
+  return {
+    ...baseProduct,
+    id: cartId,
+    name: `${baseProduct.name} ${meterValue}m`,
+  };
+}
