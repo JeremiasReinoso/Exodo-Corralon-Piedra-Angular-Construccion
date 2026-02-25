@@ -281,7 +281,7 @@ function initCatalogAndCart() {
 
   const state = {
     cart: loadCartFromStorage(),
-    activeFilter: "all",
+    activeFilter: null,
     searchQuery: "",
   };
   const savedDeliveryMode = loadDeliveryModeFromStorage();
@@ -289,7 +289,7 @@ function initCatalogAndCart() {
 
   renderCatalog(refs.productList, state.activeFilter);
   renderCart(refs, state.cart);
-  applyCategoryFilter(refs, state, "all");
+  applyCategoryFilter(refs, state, null);
 
   refs.productList.addEventListener("click", (event) => {
     const target = event.target;
@@ -476,7 +476,12 @@ function queryAny(selectors) {
 function renderCatalog(container, categoryId, searchQuery = "") {
   const normalizedQuery = normalizeText(searchQuery);
 
-  if (!categoryId || categoryId === "all") {
+  if (!categoryId) {
+    container.innerHTML = "";
+    return;
+  }
+
+  if (categoryId === "all") {
     renderAllCatalog(container, normalizedQuery);
     return;
   }
@@ -578,7 +583,7 @@ function renderCart(refs, cartMap) {
     .filter(Boolean);
 
   if (items.length === 0) {
-    refs.cartItems.innerHTML = '<p class="cart-empty">Todavía no agregaste productos.</p>';
+    refs.cartItems.innerHTML = '<p class="cart-empty">Todavia no agregaste productos.</p>';
   } else {
     refs.cartItems.innerHTML = items
       .map(
@@ -617,7 +622,7 @@ function renderCart(refs, cartMap) {
 }
 
 function applyCategoryFilter(refs, state, filter) {
-  state.activeFilter = filter || "all";
+  state.activeFilter = filter || null;
   refs.productSearchInput.value = "";
   state.searchQuery = "";
   renderCatalog(refs.productList, state.activeFilter, state.searchQuery);
@@ -625,7 +630,9 @@ function applyCategoryFilter(refs, state, filter) {
   syncSearchClearButton(refs);
   closeSearchDropdown(refs);
   refs.categoryCards.forEach((card) => {
-    card.classList.toggle("is-active", card.dataset.filter === state.activeFilter);
+    const isSelected = card.dataset.filter === state.activeFilter;
+    card.classList.toggle("is-active", isSelected);
+    card.classList.toggle("active", isSelected);
   });
 }
 
@@ -671,7 +678,7 @@ function renderSearchDropdown(refs, rawQuery) {
 
   const freeSlots = Math.max(0, MAX_SEARCH_RESULTS - Math.min(productMatches.length, MAX_SEARCH_RESULTS));
   if (freeSlots > 0 && categoryMatches.length) {
-    rows.push('<div class="search-group-label">Categorías</div>');
+    rows.push('<div class="search-group-label">Categorias</div>');
     categoryMatches.slice(0, freeSlots).forEach((category) => {
       rows.push(`
         <button class="search-category-item" type="button" data-search-category="${category.id}">
@@ -718,39 +725,15 @@ function showSearchFeedback(refs, message) {
 function updateProductEmptyState(refs, activeCategory, searchQuery) {
   const normalizedQuery = normalizeText(searchQuery);
 
-  if (activeCategory === "all") {
-    const hasAnyMatch = productCategories.some((category) =>
-      category.items.some((item) =>
-        normalizedQuery ? normalizeText(item.name).includes(normalizedQuery) : true
-      )
-    );
-    refs.productEmpty.textContent = normalizedQuery
-      ? "No encontramos productos para tu busqueda."
-      : "No hay productos disponibles en este momento.";
-    refs.productEmpty.hidden = hasAnyMatch;
-    return;
-  }
-
-  if (!activeCategory && normalizedQuery.length > 0) {
-    const hasGlobalMatch = productCategories.some((category) =>
-      category.items.some((item) => normalizeText(item.name).includes(normalizedQuery))
-    );
-    refs.productEmpty.textContent = hasGlobalMatch
-      ? ""
-      : "No encontramos productos para tu búsqueda.";
-    refs.productEmpty.hidden = hasGlobalMatch;
-    return;
-  }
-
   if (!activeCategory) {
-    refs.productEmpty.textContent = "Tocá una categoría para abrir su catálogo.";
+    refs.productEmpty.textContent = "Selecciona una categoria para ver los productos.";
     refs.productEmpty.hidden = false;
     return;
   }
 
   const category = productCategories.find((item) => item.id === activeCategory);
   if (!category) {
-    refs.productEmpty.textContent = "No se encontró la categoría seleccionada.";
+    refs.productEmpty.textContent = "No se encontro la categoria seleccionada.";
     refs.productEmpty.hidden = false;
     return;
   }
@@ -766,8 +749,8 @@ function updateProductEmptyState(refs, activeCategory, searchQuery) {
 
   refs.productEmpty.textContent =
     normalizedQuery.length > 0
-      ? "No encontramos productos para tu búsqueda."
-      : "Esta categoría no tiene productos disponibles.";
+      ? "No encontramos productos para tu busqueda."
+      : "Esta categoria no tiene productos disponibles.";
   refs.productEmpty.hidden = false;
 }
 
@@ -807,7 +790,7 @@ function parsePositiveInteger(rawValue) {
 
 function buildWhatsappMessage(items, totalItems, deliveryMode) {
   const deliveryText =
-    deliveryMode === "envio" ? "con envío" : "con retiro en el local";
+    deliveryMode === "envio" ? "con envio" : "con retiro en el local";
   const lines = [`Hola quiero averiguar estos productos ${deliveryText}:`];
   items.forEach((item) => lines.push(`- ${item.name}: ${item.qty} ${item.unit}`));
   lines.push(`Total de items: ${totalItems}`);
@@ -967,7 +950,7 @@ function initCleaningCalendar() {
 
   confirmBtn.addEventListener("click", () => {
     if (!state.selectedDate) {
-      window.alert("Seleccioná una fecha para continuar.");
+      window.alert("Selecciona una fecha para continuar.");
       return;
     }
 
@@ -975,7 +958,7 @@ function initCleaningCalendar() {
     state.occupiedDates.add(state.selectedDate);
     saveCleaningBookedToStorage(state.localBookedDates);
 
-    const message = `Hola, quiero agendar ${state.selectedService} para el día ${formatDateForWhatsapp(
+    const message = `Hola, quiero agendar ${state.selectedService} para el dia ${formatDateForWhatsapp(
       state.selectedDate
     )}.`;
     const url = `https://wa.me/5493812500312?text=${encodeURIComponent(message)}`;
@@ -1120,3 +1103,4 @@ function resolveProductByCartId(cartId) {
     name: `${baseProduct.name} ${meterValue}m`,
   };
 }
+
