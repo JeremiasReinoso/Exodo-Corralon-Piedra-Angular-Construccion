@@ -540,77 +540,6 @@ h2 {
   font-family: "Manrope", system-ui, -apple-system, Segoe UI, sans-serif;
 }
 
-.service-calendar {
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: #fff;
-  padding: 16px;
-  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.08);
-  display: grid;
-  gap: 12px;
-}
-
-.service-calendar-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.service-calendar-head strong {
-  text-transform: capitalize;
-  font-size: 1.08rem;
-}
-
-.service-calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 6px;
-  font-size: 0.84rem;
-  color: #5f6873;
-  text-align: center;
-  font-weight: 700;
-}
-
-.service-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.service-day {
-  min-height: 42px;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
-}
-
-.service-day.is-empty {
-  opacity: 0;
-  cursor: default;
-}
-
-.service-day.is-available {
-  background: #00bcd4;
-  color: #fff;
-  box-shadow: 0 8px 16px rgba(0, 188, 212, 0.3);
-}
-
-.service-day.is-unavailable {
-  background: #e53935;
-  color: #fff;
-  box-shadow: 0 8px 16px rgba(229, 57, 53, 0.25);
-}
-
-.service-day:hover {
-  transform: translateY(-2px);
-}
-
-.service-day:active {
-  transform: scale(0.96);
-}
-
 /* CTA BAND */
 .cta-band {
   background: linear-gradient(120deg, #201f1d, #2f2a25 60%, #4a2f1a);
@@ -1111,10 +1040,6 @@ h2 {
 @media (max-width: 640px) {
   .category-grid {
     grid-template-columns: 1fr;
-  }
-
-  .service-day {
-    min-height: 38px;
   }
 }
 

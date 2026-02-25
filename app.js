@@ -8,7 +8,6 @@ const CART_WHATSAPP_BASE_URL = "https://wa.me/5493815704653";
 const MAX_SEARCH_RESULTS = 6;
 const CLEANING_BOOKED_STORAGE_KEY = "exodo_cleaning_booked_v1";
 const CLEANING_DEFAULT_OCCUPIED_DATES = ["2026-04-10", "2026-04-15"];
-const SERVICE_AVAILABLE_DAYS = [1, 2, 5, 6, 9, 10, 13, 14, 17, 18, 20, 21, 24, 25, 27, 28];
 
 const productCategories = [
   {
@@ -126,7 +125,6 @@ initBaseUi();
 document.addEventListener("DOMContentLoaded", () => {
   initBusinessStatus();
   initCatalogAndCart();
-  initServiceAvailabilityCalendar();
   initCleaningCalendar();
 });
 
@@ -893,42 +891,6 @@ function buildProductIndex(categories) {
     category.items.forEach((item) => index.set(item.id, item));
   });
   return index;
-}
-
-function initServiceAvailabilityCalendar() {
-  const monthLabel = document.querySelector("#service-calendar-month-label");
-  const grid = document.querySelector("#service-calendar-grid");
-  if (!(monthLabel && grid)) return;
-
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const firstWeekday = firstDay.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  monthLabel.textContent = firstDay.toLocaleDateString("es-AR", {
-    month: "long",
-    year: "numeric",
-  });
-
-  const cells = [];
-  for (let i = 0; i < firstWeekday; i += 1) {
-    cells.push('<button type="button" class="service-day is-empty" disabled aria-hidden="true"></button>');
-  }
-
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const isAvailable = SERVICE_AVAILABLE_DAYS.includes(day);
-    const stateClass = isAvailable ? "is-available" : "is-unavailable";
-    const stateLabel = isAvailable ? "Disponible" : "No disponible";
-    cells.push(`
-      <button type="button" class="service-day ${stateClass}" aria-label="${day}: ${stateLabel}">
-        <span class="service-day-number">${day}</span>
-      </button>
-    `);
-  }
-
-  grid.innerHTML = cells.join("");
 }
 
 function initCleaningCalendar() {
