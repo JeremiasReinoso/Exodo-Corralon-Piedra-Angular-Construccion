@@ -458,6 +458,10 @@ h2 {
   margin-top: 30px;
 }
 
+#servicios-integrales-lista {
+  scroll-margin-top: 100px;
+}
+
 .services-group-title {
   margin: 0 0 16px;
   font-size: 1.06rem;
