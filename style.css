@@ -610,24 +610,6 @@ h2 {
   transform: scale(1.045);
 }
 
-.proyectos .project-content {
-  padding: 16px 16px 18px;
-  display: grid;
-  gap: 6px;
-  color: #1f2937;
-}
-
-.proyectos .project-content h3 {
-  margin: 0 0 4px;
-  font-size: 1.05rem;
-}
-
-.proyectos .project-content p {
-  margin: 0;
-  font-size: 0.92rem;
-  color: #4b5563;
-}
-
 .proyectos .prev,
 .proyectos .next {
   width: 42px;
