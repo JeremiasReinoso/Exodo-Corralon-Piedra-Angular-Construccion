@@ -558,7 +558,7 @@ h2 {
 /* PROJECTS */
 .proyectos {
   --slides-per-view: 1;
-  --slider-gap: 16px;
+  --slider-gap: 12px;
   margin-top: 10px;
 }
 
@@ -591,7 +591,7 @@ h2 {
 
 .proyectos .project-media {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #dfe3e8;
 }
