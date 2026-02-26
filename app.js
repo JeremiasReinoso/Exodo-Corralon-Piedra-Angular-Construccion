@@ -125,6 +125,7 @@ initBaseUi();
 document.addEventListener("DOMContentLoaded", () => {
   initBusinessStatus();
   initCatalogAndCart();
+  initProjectsSlider();
   initCleaningCalendar();
 });
 
@@ -634,6 +635,159 @@ function applyCategoryFilter(refs, state, filter) {
     card.classList.toggle("is-active", isSelected);
     card.classList.toggle("active", isSelected);
   });
+}
+
+function initProjectsSlider() {
+  const container = document.querySelector("[data-projects-slider]");
+  const track = container ? container.querySelector("[data-slider-track]") : null;
+  const section = container ? container.closest(".proyectos-slider") : null;
+  const prevBtn = section ? section.querySelector("[data-slider-prev]") : null;
+  const nextBtn = section ? section.querySelector("[data-slider-next]") : null;
+  const dotsWrap = section ? section.querySelector("[data-slider-dots]") : null;
+  if (!(container && track && section && prevBtn && nextBtn && dotsWrap)) return;
+
+  const originals = Array.from(track.querySelectorAll(".slider-card"));
+  if (originals.length === 0) return;
+
+  let autoplayTimer = 0;
+  let slidesPerView = 1;
+  let cloneCount = 1;
+  let currentIndex = 0;
+  let logicalIndex = 0;
+
+  const getSlidesPerView = () => {
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 700) return 2;
+    return 1;
+  };
+
+  const getStepWidth = () => {
+    const first = track.querySelector(".slider-card");
+    if (!first) return 0;
+    const firstWidth = first.getBoundingClientRect().width;
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0");
+    return firstWidth + gap;
+  };
+
+  const renderDots = () => {
+    dotsWrap.innerHTML = originals
+      .map(
+        (_item, index) =>
+          `<button class="slider-dot${index === logicalIndex ? " is-active" : ""}" type="button" data-dot-index="${index}" aria-label="Ir al proyecto ${index + 1}"></button>`
+      )
+      .join("");
+  };
+
+  const updateTrackPosition = (withTransition = true) => {
+    track.style.transition = withTransition
+      ? "transform 0.72s cubic-bezier(0.22, 0.61, 0.36, 1)"
+      : "none";
+    const step = getStepWidth();
+    track.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
+  };
+
+  const syncInfinite = () => {
+    if (currentIndex >= originals.length + cloneCount) {
+      currentIndex -= originals.length;
+      updateTrackPosition(false);
+    } else if (currentIndex < cloneCount) {
+      currentIndex += originals.length;
+      updateTrackPosition(false);
+    }
+    logicalIndex = (currentIndex - cloneCount + originals.length) % originals.length;
+    renderDots();
+  };
+
+  const build = () => {
+    logicalIndex = (currentIndex - cloneCount + originals.length) % originals.length;
+    slidesPerView = getSlidesPerView();
+    cloneCount = Math.min(slidesPerView, originals.length);
+    section.style.setProperty("--slides-per-view", String(slidesPerView));
+
+    Array.from(track.querySelectorAll("[data-clone='true']")).forEach((clone) => clone.remove());
+
+    const headClones = originals
+      .slice(-cloneCount)
+      .map((slide) => {
+        const clone = slide.cloneNode(true);
+        clone.dataset.clone = "true";
+        return clone;
+      });
+    const tailClones = originals
+      .slice(0, cloneCount)
+      .map((slide) => {
+        const clone = slide.cloneNode(true);
+        clone.dataset.clone = "true";
+        return clone;
+      });
+
+    headClones.forEach((clone) => track.insertBefore(clone, track.firstChild));
+    tailClones.forEach((clone) => track.appendChild(clone));
+
+    currentIndex = cloneCount + logicalIndex;
+    renderDots();
+    updateTrackPosition(false);
+  };
+
+  const goToLogical = (index) => {
+    logicalIndex = (index + originals.length) % originals.length;
+    currentIndex = cloneCount + logicalIndex;
+    updateTrackPosition(true);
+    renderDots();
+  };
+
+  const next = () => {
+    currentIndex += 1;
+    updateTrackPosition(true);
+  };
+
+  const prev = () => {
+    currentIndex -= 1;
+    updateTrackPosition(true);
+  };
+
+  const stopAutoplay = () => {
+    if (autoplayTimer) window.clearInterval(autoplayTimer);
+    autoplayTimer = 0;
+  };
+
+  const startAutoplay = () => {
+    stopAutoplay();
+    autoplayTimer = window.setInterval(next, 4500);
+  };
+
+  nextBtn.addEventListener("click", () => {
+    next();
+    startAutoplay();
+  });
+  prevBtn.addEventListener("click", () => {
+    prev();
+    startAutoplay();
+  });
+
+  dotsWrap.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    const dot = target.closest("[data-dot-index]");
+    if (!(dot instanceof HTMLElement)) return;
+    const index = Number.parseInt(dot.dataset.dotIndex || "", 10);
+    if (!Number.isFinite(index)) return;
+    goToLogical(index);
+    startAutoplay();
+  });
+
+  track.addEventListener("transitionend", syncInfinite);
+  section.addEventListener("mouseenter", stopAutoplay);
+  section.addEventListener("mouseleave", startAutoplay);
+  section.addEventListener("focusin", stopAutoplay);
+  section.addEventListener("focusout", startAutoplay);
+  window.addEventListener("resize", () => {
+    window.clearTimeout(initProjectsSlider.resizeTimer);
+    initProjectsSlider.resizeTimer = window.setTimeout(() => build(), 120);
+  });
+
+  build();
+  startAutoplay();
 }
 
 function syncSearchClearButton(refs) {
