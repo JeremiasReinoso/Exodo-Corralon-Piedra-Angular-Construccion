@@ -7,7 +7,7 @@ const DELIVERY_MODE_STORAGE_KEY = "exodo_delivery_mode_v1";
 const CART_WHATSAPP_BASE_URL = "https://wa.me/5493815704653";
 const MAX_SEARCH_RESULTS = 6;
 const CLEANING_BOOKED_STORAGE_KEY = "exodo_cleaning_booked_v1";
-const CLEANING_DEFAULT_OCCUPIED_DATES = ["2026-04-10", "2026-04-15"];
+const CLEANING_DEFAULT_OCCUPIED_DATES = [];
 
 const productCategories = [
   {
@@ -1120,10 +1120,6 @@ function initCleaningCalendar() {
       return;
     }
 
-    state.localBookedDates.add(state.selectedDate);
-    state.occupiedDates.add(state.selectedDate);
-    saveCleaningBookedToStorage(state.localBookedDates);
-
     const message = `Hola, quiero agendar ${state.selectedService} para el dia ${formatDateForWhatsapp(
       state.selectedDate
     )}.`;
@@ -1157,9 +1153,9 @@ function renderCleaningCalendar(state, monthLabelEl, gridEl, confirmBtnEl, today
   for (let day = 1; day <= daysInMonth; day += 1) {
     const date = new Date(year, month, day);
     const isoDate = formatDateIso(date);
-    const isPast = date < today;
-    const isOccupied = state.occupiedDates.has(isoDate);
-    const isAvailable = !isPast && !isOccupied;
+    const isPast = false;
+    const isOccupied = false;
+    const isAvailable = true;
     const isSelected = state.selectedDate === isoDate;
     const classes = [
       "calendar-day",
