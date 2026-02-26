@@ -152,53 +152,68 @@
       <section id="obras" class="section">
         <div class="container">
           <span class="tag">Obras reales, resultados visibles</span>
-          <h2>Proyectos ejecutados con estándares profesionales</h2>
-          <section class="proyectos-slider" aria-label="Carrusel de proyectos ejecutados">
-            <div class="slider-container" data-projects-slider>
-              <div class="slider-track" data-slider-track>
-                <article class="project slider-card">
-                  <div class="project-media">
-                    <img src="Obra1.jpeg" alt="Obra residencial llave en mano" />
-                  </div>
-                  <div class="project-info">
-                    <strong>Residencial llave en mano</strong>
-                    <div class="muted">Córdoba · 320 m² · 5 meses</div>
-                  </div>
-                </article>
-                <article class="project slider-card">
-                  <div class="project-media">
-                    <img src="Obra 2 .jpeg" alt="Obra comercial" />
-                  </div>
-                  <div class="project-info">
-                    <strong>Centro comercial</strong>
-                    <div class="muted">Villa Allende · 980 m² · 7 meses</div>
-                  </div>
-                </article>
-                <article class="project slider-card">
-                  <div class="project-media">
-                    <img src="Obra 3 .jpeg" alt="Nave industrial" />
-                  </div>
-                  <div class="project-info">
-                    <strong>Nave industrial</strong>
-                    <div class="muted">Jesús María · 1.800 m² · 6 meses</div>
-                  </div>
-                </article>
-                <article class="project slider-card">
-                  <div class="project-media">
-                    <img src="Obra 4 .jpeg" alt="Ampliación urbana" />
-                  </div>
-                  <div class="project-info">
-                    <strong>Ampliación urbana</strong>
-                    <div class="muted">Córdoba · 240 m² · 3 meses</div>
-                  </div>
-                </article>
+          <section class="proyectos" aria-label="Carrusel de proyectos ejecutados">
+            <h2>Proyectos ejecutados con estándares profesionales</h2>
+
+            <div class="slider" data-projects-slider>
+              <button class="prev" type="button" data-slider-prev aria-label="Proyecto anterior">&#8249;</button>
+
+              <div class="slider-container">
+                <div class="slider-track" data-slider-track>
+                  <article class="project-card">
+                    <div class="project-media">
+                      <img src="Obra1.jpeg" alt="Obra residencial llave en mano" />
+                    </div>
+                    <div class="project-content">
+                      <h3>Residencial llave en mano</h3>
+                      <p><strong>Ubicación:</strong> Córdoba</p>
+                      <p><strong>Metros:</strong> 320 m²</p>
+                      <p><strong>Duración:</strong> 5 meses</p>
+                    </div>
+                  </article>
+
+                  <article class="project-card">
+                    <div class="project-media">
+                      <img src="Obra 2 .jpeg" alt="Obra comercial" />
+                    </div>
+                    <div class="project-content">
+                      <h3>Centro comercial</h3>
+                      <p><strong>Ubicación:</strong> Villa Allende</p>
+                      <p><strong>Metros:</strong> 980 m²</p>
+                      <p><strong>Duración:</strong> 7 meses</p>
+                    </div>
+                  </article>
+
+                  <article class="project-card">
+                    <div class="project-media">
+                      <img src="Obra 3 .jpeg" alt="Nave industrial" />
+                    </div>
+                    <div class="project-content">
+                      <h3>Nave industrial</h3>
+                      <p><strong>Ubicación:</strong> Jesús María</p>
+                      <p><strong>Metros:</strong> 1.800 m²</p>
+                      <p><strong>Duración:</strong> 6 meses</p>
+                    </div>
+                  </article>
+
+                  <article class="project-card">
+                    <div class="project-media">
+                      <img src="Obra 4 .jpeg" alt="Ampliación urbana" />
+                    </div>
+                    <div class="project-content">
+                      <h3>Ampliación urbana</h3>
+                      <p><strong>Ubicación:</strong> Córdoba</p>
+                      <p><strong>Metros:</strong> 240 m²</p>
+                      <p><strong>Duración:</strong> 3 meses</p>
+                    </div>
+                  </article>
+                </div>
               </div>
+
+              <button class="next" type="button" data-slider-next aria-label="Proyecto siguiente">&#8250;</button>
             </div>
-            <div class="slider-controls">
-              <button class="slider-arrow" type="button" data-slider-prev aria-label="Proyecto anterior">&#8249;</button>
-              <div class="slider-dots" data-slider-dots aria-label="Navegación de proyectos"></div>
-              <button class="slider-arrow" type="button" data-slider-next aria-label="Proyecto siguiente">&#8250;</button>
-            </div>
+
+            <div class="dots" data-slider-dots aria-label="Indicadores de proyectos"></div>
           </section>
         </div>
       </section>

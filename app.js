@@ -638,15 +638,15 @@ function applyCategoryFilter(refs, state, filter) {
 }
 
 function initProjectsSlider() {
-  const container = document.querySelector("[data-projects-slider]");
-  const track = container ? container.querySelector("[data-slider-track]") : null;
-  const section = container ? container.closest(".proyectos-slider") : null;
-  const prevBtn = section ? section.querySelector("[data-slider-prev]") : null;
-  const nextBtn = section ? section.querySelector("[data-slider-next]") : null;
-  const dotsWrap = section ? section.querySelector("[data-slider-dots]") : null;
-  if (!(container && track && section && prevBtn && nextBtn && dotsWrap)) return;
+  const section = document.querySelector(".proyectos");
+  const slider = section ? section.querySelector(".slider") : null;
+  const track = section ? section.querySelector("[data-slider-track]") : null;
+  const prevBtn = section ? section.querySelector(".prev") : null;
+  const nextBtn = section ? section.querySelector(".next") : null;
+  const dotsWrap = section ? section.querySelector(".dots") : null;
+  if (!(section && slider && track && prevBtn && nextBtn && dotsWrap)) return;
 
-  const originals = Array.from(track.querySelectorAll(".slider-card"));
+  const originals = Array.from(track.querySelectorAll(".project-card"));
   if (originals.length === 0) return;
 
   let autoplayTimer = 0;
@@ -655,6 +655,7 @@ function initProjectsSlider() {
   let currentIndex = 0;
   let logicalIndex = 0;
 
+  // Responsive real: 1 en movil, 2 en tablet, 3 en desktop.
   const getSlidesPerView = () => {
     if (window.innerWidth >= 1024) return 3;
     if (window.innerWidth >= 700) return 2;
@@ -662,7 +663,7 @@ function initProjectsSlider() {
   };
 
   const getStepWidth = () => {
-    const first = track.querySelector(".slider-card");
+    const first = track.querySelector(".project-card");
     if (!first) return 0;
     const firstWidth = first.getBoundingClientRect().width;
     const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0");
@@ -673,7 +674,7 @@ function initProjectsSlider() {
     dotsWrap.innerHTML = originals
       .map(
         (_item, index) =>
-          `<button class="slider-dot${index === logicalIndex ? " is-active" : ""}" type="button" data-dot-index="${index}" aria-label="Ir al proyecto ${index + 1}"></button>`
+          `<button class="dot${index === logicalIndex ? " is-active" : ""}" type="button" data-dot-index="${index}" aria-label="Ir al proyecto ${index + 1}"></button>`
       )
       .join("");
   };
@@ -686,6 +687,7 @@ function initProjectsSlider() {
     track.style.transform = `translate3d(${-currentIndex * step}px, 0, 0)`;
   };
 
+  // Reubica el indice cuando llega a clones para simular loop infinito.
   const syncInfinite = () => {
     if (currentIndex >= originals.length + cloneCount) {
       currentIndex -= originals.length;
@@ -698,6 +700,7 @@ function initProjectsSlider() {
     renderDots();
   };
 
+  // Reconstruye clones al iniciar y en resize.
   const build = () => {
     logicalIndex = (currentIndex - cloneCount + originals.length) % originals.length;
     slidesPerView = getSlidesPerView();
@@ -751,9 +754,10 @@ function initProjectsSlider() {
     autoplayTimer = 0;
   };
 
+  // Auto-play cada 5 segundos.
   const startAutoplay = () => {
     stopAutoplay();
-    autoplayTimer = window.setInterval(next, 4500);
+    autoplayTimer = window.setInterval(next, 5000);
   };
 
   nextBtn.addEventListener("click", () => {
@@ -777,10 +781,10 @@ function initProjectsSlider() {
   });
 
   track.addEventListener("transitionend", syncInfinite);
-  section.addEventListener("mouseenter", stopAutoplay);
-  section.addEventListener("mouseleave", startAutoplay);
-  section.addEventListener("focusin", stopAutoplay);
-  section.addEventListener("focusout", startAutoplay);
+  slider.addEventListener("mouseenter", stopAutoplay);
+  slider.addEventListener("mouseleave", startAutoplay);
+  slider.addEventListener("focusin", stopAutoplay);
+  slider.addEventListener("focusout", startAutoplay);
   window.addEventListener("resize", () => {
     window.clearTimeout(initProjectsSlider.resizeTimer);
     initProjectsSlider.resizeTimer = window.setTimeout(() => build(), 120);
