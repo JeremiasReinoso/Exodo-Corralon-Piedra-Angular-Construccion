@@ -640,11 +640,12 @@ function applyCategoryFilter(refs, state, filter) {
 function initProjectsSlider() {
   const section = document.querySelector(".proyectos");
   const slider = section ? section.querySelector(".slider") : null;
+  const viewport = slider ? slider.querySelector(".slider-container") : null;
   const track = section ? section.querySelector("[data-slider-track]") : null;
   const prevBtn = section ? section.querySelector(".prev") : null;
   const nextBtn = section ? section.querySelector(".next") : null;
   const dotsWrap = section ? section.querySelector(".dots") : null;
-  if (!(section && slider && track && prevBtn && nextBtn && dotsWrap)) return;
+  if (!(section && slider && viewport && track && prevBtn && nextBtn && dotsWrap)) return;
 
   const originals = Array.from(track.querySelectorAll(".project-card"));
   if (originals.length === 0) return;
@@ -726,6 +727,13 @@ function initProjectsSlider() {
 
     headClones.forEach((clone) => track.insertBefore(clone, track.firstChild));
     tailClones.forEach((clone) => track.appendChild(clone));
+
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || "0");
+    const viewportWidth = viewport.getBoundingClientRect().width;
+    const cardWidth = (viewportWidth - gap * (slidesPerView - 1)) / slidesPerView;
+    Array.from(track.querySelectorAll(".project-card")).forEach((card) => {
+      card.style.flex = `0 0 ${cardWidth}px`;
+    });
 
     currentIndex = cloneCount + logicalIndex;
     renderDots();
